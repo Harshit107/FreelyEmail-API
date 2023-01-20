@@ -2,12 +2,13 @@
 
 const nodemailer = require("nodemailer");
 require('dotenv').config()
-const appname = 'LetsChat'
+
 
 const sendMail = async function (email, message, preHtml) {
 
     const fromEmail =process.env.SENDINBLUE_EMAIL;
     const password = process.env.SENDINBLUE_PASSWORD;
+    const appname = 'LetsChat'
  
     
     message = 'This is just a testing mail from Auto Email'
