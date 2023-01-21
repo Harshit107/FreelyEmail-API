@@ -1,17 +1,15 @@
 "use strict";
-
 const nodemailer = require("nodemailer");
 require('dotenv').config()
 
 
-const sendMail = async function (email, message, preHtml) {
+const sendMail = async function (appName,senderEmail, message, HTMLfile) {
 
     const fromEmail =process.env.SENDINBLUE_EMAIL;
     const password = process.env.SENDINBLUE_PASSWORD;
-    const appname = 'LetsChat'
  
-    
-    message = 'This is just a testing mail from Auto Email'
+    appName = appName || Notification
+    message = message || 'This is just a notification'
     let mailTransporter = nodemailer.createTransport({ 
         host: 'smtp-relay.sendinblue.com',
         port: 587,
@@ -23,11 +21,11 @@ const sendMail = async function (email, message, preHtml) {
       
 
     let mailDetails = {
-        from: "noreply@imharshit.tech",
-        to: email,
+        from: `${appName}@imharshit.tech`,
+        to: senderEmail,
         subject: `${appname}`,
         text: `${message}`,
-        html: preHtml
+        html: HTMLfile
     };
 
     mailTransporter.sendMail(mailDetails, function (err, data) {
@@ -37,8 +35,6 @@ const sendMail = async function (email, message, preHtml) {
             console.log('Email sent successfully');
         }
     });
-
-    
 
 }
 module.exports = sendMail
