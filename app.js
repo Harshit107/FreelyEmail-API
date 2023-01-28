@@ -3,7 +3,9 @@ const app = express();
 const emailRouter = require('./src/router/PublicEmailSenderRouter');
 
 const PORT = process.env.PORT || 3000;
-// app.use(express.json())
+
+//parsing body
+app.use(express.json())
 
 //router
 app.use(emailRouter)
