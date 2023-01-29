@@ -1,9 +1,10 @@
 const express = require('express');
+const cors = require('cors');
+
 const app = express();
 const emailRouter = require('./src/router/PublicEmailSenderRouter');
 
 const PORT = process.env.PORT || 3000;
-const cors = require('cors');
 
 app.use(cors());
 
