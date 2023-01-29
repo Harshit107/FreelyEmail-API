@@ -21,7 +21,7 @@ const sendMail = async function (appName,subject,recipientsEmail,senderEmail, me
       
 
     let mailDetails = {
-        from: `${senderEmail}@donot-Reply.online`,
+        from: `"${appName}" <${senderEmail}@donot-Reply.online>`,
         to: recipientsEmail,
         subject: `${subject}`,
         text: `${message}`,
