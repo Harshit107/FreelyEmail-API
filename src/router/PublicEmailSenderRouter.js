@@ -1,9 +1,23 @@
-const e = require('express');
 const express = require('express');
 const router = new express.Router();
 const emailSender = require('../Email/EmailSender');
 const otpVerificationAsString = require('../HTMLtemplets/otpVerification');
 
+function validateData (data) {
+
+    if(data == undefined || data == '') {
+        return false;
+    }
+    return true;
+}
+
+function sendError (res, errorMessage) {
+    console.log('errorMessage :>> ', errorMessage);
+    res.status(400).send({
+        "data" : {},
+        "error" : errorMessage
+    })
+}
 
 
 router.post('/public/email/notification', async (req, res) => {
@@ -16,12 +30,49 @@ router.post('/public/email/notification', async (req, res) => {
     const subject = reqEmailBody.subject;   // Credit Notification
     const emailContent = reqEmailBody.emailContent; // your orignal Content
     const HTMLfile = reqEmailBody.HTMLfile; // Single HTML as string
-    // console.log('senderEmail :>> ', reqEmailBody);
 
+    if(!validateData(senderEmail) ){
+        
+        sendError(res,"Enter Valid Sender Email Address");
+        return;
+    }
 
-    await emailSender(appName,subject,recipientsEmail,senderEmail,emailContent,HTMLfile);
+    if(!validateData(recipientsEmail) ){
+        sendError(res,"Enter Valid recipient Email Address");
+        return;
+    }
 
-    res.status(200).send({"message" : "Success"});
+    if(!validateData(appName) ){
+        sendError(res,"Enter Valid App Name");
+        return;
+    }
+
+    if(!validateData(subject) ){
+        sendError(res,"Enter Valid Subject");
+        return;
+    }
+    if(!validateData(emailContent) && !validateData(HTMLfile) ){
+        sendError(res,"Enter Valid Email Content");
+        return;
+    }
+
+    
+    try{
+       const msg = await emailSender(appName,subject,recipientsEmail,senderEmail,emailContent,HTMLfile);
+        res.status(200).send({
+            "data" : msg.messageId,
+            "error" : {}
+        });
+
+    }
+    catch(e){
+        res.status(400).send({
+            "data" : {},
+            "error" : e.response
+        });
+    }
+    
+    
 
 
 })
@@ -37,9 +88,19 @@ router.post('/public/email/otpverification', async (req, res) => {
     const withValidTime = reqEmailBody.time; // Single HTML as string    
     var otpValidString = otpVerificationAsString(appName, otp, withValidTime);
 
-    await emailSender(appName, subject,recipientsEmail, senderEmail, otpValidString, otpValidString);
-    
-    res.status(200).send({"message" : "Success"});
+    try{
+        const msg = await emailSender(appName,subject,recipientsEmail,senderEmail,emailContent,HTMLfile);
+         res.status(200).send({
+             "data" : msg.messageId,
+             "error" : {}
+         });
+     }
+     catch(e){
+         res.status(400).send({
+             "data" : {},
+             "error" : e.response
+         });
+     }
 
 
    
