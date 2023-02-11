@@ -6,6 +6,7 @@ require('dotenv').config()
 const sendMail = async function (appName,subject,recipientsEmail,senderEmail, message, HTMLfile) {
 
     // console.log(appName,subject,senderEmail, HTMLfile);
+    console.log('Sender Page :>> ', recipientsEmail);
 
     const authEmail =process.env.SENDINBLUE_EMAIL;
     const authPass = process.env.SENDINBLUE_PASSWORD;
