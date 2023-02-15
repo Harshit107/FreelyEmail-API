@@ -78,8 +78,8 @@ https://github.com/Harshit107/Donot-Reply-EmailSender-Api.git
     
 ## Environment Variables 
 
-To run this project, you will need to add the following environment variables to your .env file 
-contact for .env : contact@harshit107.tech
+To run this project, you will need to add the following environment variables to your .env file. || 
+__contact for .env : contact@harshit107.tech__
 
 `SendInBlue Email`
 
@@ -89,5 +89,5 @@ contact for .env : contact@harshit107.tech
 
 ## Demo
 
-https://www.test.donot-reply.online
+[Send your First Email ](https://test.donot-reply.online/)
 
