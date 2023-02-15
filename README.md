@@ -16,6 +16,16 @@ Auto-Email-Sender is build on Node.js that makes it easy to send automated email
 
 
 It also come with Android and Node Js library which reduces the effort of managing APIs and handling errors.
+
+## How to use:
+
+API  : https://send.donot-reply.online/public
+
+ * Send Simple Email : /email/notification
+   * Request Type : POST
+   * Body : { senderEmail,recipientsEmail,appName,subject,emailContent,HTMLfile }
+     * Note : 1. parameter must have same name as mentioned above
+              2. sender email should not contain any domain, we will add @donot-reply.online at the end.
  
 
 ## Installation
@@ -30,8 +40,6 @@ https://github.com/Harshit107/Donot-Reply-EmailSender-Api.git
 ```
     
 ## Environment Variables ( only for those who want to contribute )
-
-
 
 To run this project, you will need to add the following environment variables to your .env file
 
