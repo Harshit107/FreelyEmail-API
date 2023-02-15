@@ -20,12 +20,13 @@ It also come with Android and Node Js library which reduces the effort of managi
 ## How to use:
 
 API  : https://send.donot-reply.online/public
-
+```
  * Send Simple Email : /email/notification
    * Request Type : POST
    * Body : { senderEmail,recipientsEmail,appName,subject,emailContent,HTMLfile }
-     * Note : 1. parameter must have same name as mentioned above
-              2. sender email should not contain any domain, we will add @donot-reply.online at the end.
+     * Note : * parameter must have same name as mentioned above
+              * sender email should not contain any domain, we will add @donot-reply.online at the end.
+```
  
 
 ## Installation
