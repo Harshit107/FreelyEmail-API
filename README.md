@@ -19,9 +19,10 @@ It also come with Android and Node Js library which reduces the effort of managi
 
 ## How to use:
 
-API  : https://send.donot-reply.online/public
+API  : https://send.donot-reply.online/public/email
+
   ```
-  Send Simple Email : /email/notification
+  Send Simple Email : /notification
    * Request Type : POST
    * Body : { senderEmail,recipientsEmail,appName,subject,emailContent,HTMLfile }
  ```
@@ -34,10 +35,30 @@ API  : https://send.donot-reply.online/public
       "recipientsEmail" : "Email Address to whom you want to send Email", //  use Array of String for multiple email
       "appName" : "Your APP Name", 
       "subject" : "Subject of your email",
-      "senderEmail" : "Your App Email", //eg: Your-App-Name // donot include @donot-reply.online // no space or special char
+      "senderEmail" : "YourAppEmail", //eg: Your-App-Name // donot include @donot-reply.online // no space or special char
       "emailContent" : "Email Message",  //your Email containt
       "HTMLfile" : "HTML File if you have" //must be in String and single html formate  
     } 
+  ```
+  
+   ```
+  Send OTP Email : /OtpVerification
+   * Request Type : POST
+   * Body : { appName,subject,recipientsEmail,senderEmail, otp, withValidTime }
+ ```
+  * Note : 
+    * parameter must have same name as mentioned above
+    * sender email should not contain any domain, we will add @donot-reply.online at the end.
+    * Example : 
+   ``` JavaScript
+  const msgBody = {
+        "appName" : appName,
+        "subject" : subject,
+        "recipientsEmail" : recipientsEmail,
+        "senderEmail" : senderEmail,
+        "otp" : otp,  // must 
+        "withValidTime" : withValidTime // not necessary 
+    }
   ```
 
  
