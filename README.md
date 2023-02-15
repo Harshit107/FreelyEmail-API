@@ -19,10 +19,11 @@ It also come with Android and Node Js library which reduces the effort of managi
 
 ## How to use:
 
-API  : https://send.donot-reply.online/public/email
+### API  : https://send.donot-reply.online/public/email
 
+  
+  #### Send Simple Email : /notification
   ```
-  Send Simple Email : /notification
    * Request Type : POST
    * Body : { senderEmail,recipientsEmail,appName,subject,emailContent,HTMLfile }
  ```
@@ -41,8 +42,9 @@ API  : https://send.donot-reply.online/public/email
     } 
   ```
   
-   ```
-  Send OTP Email : /OtpVerification
+   
+  #### Send OTP Email : /OtpVerification
+  ```
    * Request Type : POST
    * Body : { appName,subject,recipientsEmail,senderEmail, otp, withValidTime }
  ```
