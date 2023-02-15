@@ -65,7 +65,7 @@ It also come with Android and Node Js library which reduces the effort of managi
 
  
 
-## Installation
+## Installation -------------   ( only for those who want to contribute )    -------------------------------------- 
 
 Install my-project with npm
 
@@ -76,9 +76,10 @@ https://github.com/Harshit107/Donot-Reply-EmailSender-Api.git
 3 Install the dependencies using npm install
 ```
     
-## Environment Variables ( only for those who want to contribute )
+## Environment Variables 
 
-To run this project, you will need to add the following environment variables to your .env file
+To run this project, you will need to add the following environment variables to your .env file 
+contact for .env : contact@harshit107.tech
 
 `SendInBlue Email`
 
@@ -88,5 +89,5 @@ To run this project, you will need to add the following environment variables to
 
 ## Demo
 
-test.donot-reply.online
+https://www.test.donot-reply.online
 
