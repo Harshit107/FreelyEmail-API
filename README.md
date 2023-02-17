@@ -9,8 +9,6 @@ One of the main benefits of your AutoEmailSender API is that it simplifies the p
 
 The API is built on top of a scalable and reliable infrastructure that ensures high availability and performance. It also provides a simple and clear documentation that makes it easy for developers to integrate the API into their applications.
 
-In summary, your AutoEmailSender API provides a simple, secure, and reliable way for developers to send emails from within their applications without having to configure their own email infrastructure
-
 Summery (😂):
 Auto-Email-Sender is build on Node.js that makes it easy to send automated emails without writing any code. It doesnot require any email and Server configuration. Just call the API with the required data and boooom!!! Email Send 
 
@@ -19,10 +17,10 @@ It also come with Android and Node Js library which reduces the effort of managi
 
 ## How to use:
 
-### API  : https://send.donot-reply.online/public/email
+### API  : https://send.donot-reply.online/public/email/YOUR-API-REQUEST
 
   
-  #### * Send Simple Email : /notification
+  #### * Send Simple Email :  https://send.donot-reply.online/public/email/notification
   ```
    * Request Type : POST
    * Body : { senderEmail,recipientsEmail,appName,subject,emailContent,HTMLfile }
@@ -43,7 +41,7 @@ It also come with Android and Node Js library which reduces the effort of managi
   ```
   
    
-  #### * Send OTP Email : /OtpVerification
+  #### * Send OTP Email : https://send.donot-reply.online/public/email/notification/OtpVerification
   ```
    * Request Type : POST
    * Body : { appName,subject,recipientsEmail,senderEmail, otp, withValidTime }
