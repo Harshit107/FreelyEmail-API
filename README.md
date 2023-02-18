@@ -5,19 +5,19 @@ AutoEmailSender API is a RESTful web service that provides developers with an ea
 
 To use the API, a developer needs to make an HTTP request to the service with the required data for sending the email, such as the recipient's email address, subject, and message body. The API then takes care of the rest, including formatting and sending the email using the DoNot-Reply.online domain.
 
-One of the main benefits of your AutoEmailSender API is that it simplifies the process of sending emails for developers who may not have the time or resources to set up their own email infrastructure. It also provides an added layer of security, as it allows developers to send emails without disclosing their own domain or email server information.
+One of the main benefit of this AutoEmailSender API is that it simplifies the process of sending emails for developers who may not have the time or resources to set up their own email infrastructure. It also provides an added layer of security, as it allows developers to send emails without disclosing their own domain or email server information.
 
 The API is built on top of a scalable and reliable infrastructure that ensures high availability and performance. It also provides a simple and clear documentation that makes it easy for developers to integrate the API into their applications.
 
-Summery (😂):
+Summary (😂):
 Auto-Email-Sender is build on Node.js that makes it easy to send automated emails without writing any code. It doesnot require any email and Server configuration. Just call the API with the required data and boooom!!! Email Send 
 
 
 It also come with Android and Node Js library which reduces the effort of managing APIs and handling errors.
 
-## How to use:
+# How to use:
 
-### API  : https://send.donot-reply.online/public/email/YOUR-API-REQUEST
+## API  : https://send.donot-reply.online/public/email/YOUR-API-REQUEST
 
   
   #### * Send Simple Email :  https://send.donot-reply.online/public/email/notification
@@ -60,6 +60,32 @@ It also come with Android and Node Js library which reduces the effort of managi
         "withValidTime" : withValidTime // not necessary 
     }
   ```
+  
+  # Response
+  
+  Every Request will have object as response which will contain `data and error`.
+  
+  ### Success
+  ``` JavaScript
+  {
+    data : "Message Id",
+    error : {}
+  }
+  
+  ```
+  Status code  : 200.
+  
+  ### Error
+  ``` JavaScript
+  {
+    data : {},
+    error : "Error Reason"
+  }
+  
+  ```
+  Status code  : 400.
+  
+  
 
  
 
