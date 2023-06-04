@@ -20,18 +20,18 @@ function sendError (res, errorMessage) {
 }
 
 function validateRequest (req, res) {
-    if(!validateData(req.senderEmail) ){
+    if(!validateData(req.sender) ){
         
         sendError(res,"Enter Valid Sender Email Address");
         return false;
     }
 
-    if(!validateData(req.recipientsEmail) ){
+    if(!validateData(req.recipient) ){
         sendError(res,"Enter Valid recipient Email Address");
         return false;
     }
 
-    if(!validateData(req.appName) ){
+    if(!validateData(req.app) ){
         sendError(res,"Enter Valid App Name");
         return false;;
     }
@@ -45,33 +45,33 @@ function validateRequest (req, res) {
 }
 
 
+// /---------------    Simple Email  -------------------------------/
+
 router.post('/public/email/notification', async (req, res) => {
 
     const reqEmailBody = req.body;
-
-    const {senderEmail,recipientsEmail,appName,subject,emailContent,HTMLfile} = reqEmailBody; //may be single email or array of Email
+    const {sender,recipient,app,subject,message,HTMLfile} = reqEmailBody; //may be single email or array of Email
     
-    // const recipientsEmail = reqEmailBody.recipientsEmail; //may be single email or array of Email
-    // const appName = reqEmailBody.appName;   //eg : google@donot-reply.online
+    // const recipient = reqEmailBody.recipient; //may be single email or array of Email
+    // const app = reqEmailBody.app;   //eg : google@donot-reply.online
     // const subject = reqEmailBody.subject;   // Credit Notification
-    // const emailContent = reqEmailBody.emailContent; // your orignal Content
+    // const message = reqEmailBody.message; // your orignal Content
     // const HTMLfile = reqEmailBody.HTMLfile; // Single HTML as string
 
     if(!validateRequest(reqEmailBody,res))
         return;
    
-    if(!validateData(emailContent) && !validateData(HTMLfile) ){
+    if(!validateData(message) && !validateData(HTMLfile) ){
         sendError(res,"Enter Valid Email Content");
         return false;;
     }
     
     try{
-       const msg = await emailSender(appName,subject,recipientsEmail,senderEmail,emailContent,HTMLfile);
+       const msg = await emailSender(app,subject,recipient,sender,message,HTMLfile);
         res.status(200).send({
-            "data" : msg.messageId,
+            "data" : msg,
             "error" : {}
         });
-
     }
     catch(e){
         res.status(400).send({
@@ -80,22 +80,16 @@ router.post('/public/email/notification', async (req, res) => {
         });
     }
     
-    
-
-
 })
 
 
-// ---------------------------------------------------------------------------------------------------------------
-// ---------------------------------------------------------------------------------------------------------------
+// ---------------------       Email OTP With Templete      --------------------------------------------------
 
 
-router.post('/public/email/otpverification', async (req, res) => {
+router.post('/public/email/otp', async (req, res) => {
 
     const reqEmailBody = req.body;
-    
-    const {senderEmail,recipientsEmail,appName,subject,otp,withValidTime} = reqEmailBody; //may be single email or array of Email
-       
+    const {sender,recipient,app,subject,otp,withValidTime, HTMLfile} = reqEmailBody; //may be single email or array of Email
 
     if(!validateRequest(reqEmailBody,res))
         return;
@@ -104,15 +98,14 @@ router.post('/public/email/otpverification', async (req, res) => {
         sendError(res,"Enter Valid OTP");
         return false;;
     }
-
-    var otpValidString = otpVerificationAsString(appName, otp, withValidTime) ;
-    
+    var otpValidString = HTMLfile || otpVerificationAsString(app, otp, withValidTime) ;
 
     try{
-        const msg = await emailSender(appName,subject,recipientsEmail,senderEmail,otp,otpValidString);
-        
+        const msg = await emailSender(app,subject,recipient,sender,otp,otpValidString);  
+
+        console.log(msg);
          res.status(200).send({
-             "data" : msg.messageId,
+             "data" : msg,
              "error" : {}
          });
      }
@@ -124,8 +117,6 @@ router.post('/public/email/otpverification', async (req, res) => {
          });
      }
 
-
-   
 })
 
 module.exports = router;

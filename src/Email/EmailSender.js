@@ -3,10 +3,8 @@ const nodemailer = require("nodemailer");
 require('dotenv').config()
 
 
-const sendMail = async function (appName,subject,recipientsEmail,senderEmail, message, HTMLfile) {
+const sendMail = async function (app,subject,recipient,sender, message, HTMLfile) {
 
-    // console.log(appName,subject,senderEmail, HTMLfile);
-    console.log('Sender Page :>> ', recipientsEmail);
 
     const authEmail =process.env.SENDINBLUE_EMAIL;
     const authPass = process.env.SENDINBLUE_PASSWORD;
@@ -22,16 +20,14 @@ const sendMail = async function (appName,subject,recipientsEmail,senderEmail, me
       
 
     let mailDetails = {
-        from: `"${appName}" <${senderEmail}@donot-Reply.online>`,
-        to: recipientsEmail,
+        from: `"${app}" <${sender}@donot-Reply.online>`,
+        to: recipient,
         subject: `${subject}`,
         text: `${message}`,
         html: HTMLfile
     };
-
     const info =  await mailTransporter.sendMail(mailDetails);
-    console.log('info :>> ', info);
-    return info;
+    return info.messageId;
    
 
 }
