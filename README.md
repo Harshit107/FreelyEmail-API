@@ -31,5 +31,5 @@ To run this project, you will need to add the following environment variables to
 
 ## Demo
 
-test.donot-reply.online
+https://test.donot-reply.online
 

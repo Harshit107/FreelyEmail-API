@@ -30,7 +30,7 @@ const sendMail = async function (appName,subject,recipientsEmail,senderEmail, me
     };
 
     const info =  await mailTransporter.sendMail(mailDetails);
-    // console.log('info :>> ', info);
+    console.log('info :>> ', info);
     return info;
    
 
