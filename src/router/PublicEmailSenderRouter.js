@@ -85,7 +85,6 @@ router.post('/public/email/notification', async (req, res) => {
 
 // ---------------------       Email OTP With Templete      --------------------------------------------------
 
-
 router.post('/public/email/otp', async (req, res) => {
 
     const reqEmailBody = req.body;
@@ -98,12 +97,17 @@ router.post('/public/email/otp', async (req, res) => {
         sendError(res,"Enter Valid OTP");
         return false;;
     }
-    var otpValidString = HTMLfile || otpVerificationAsString(app, otp, withValidTime) ;
+    var HTMLtemplete = HTMLfile || otpVerificationAsString(app, otp, withValidTime) ;
 
     try{
-        const msg = await emailSender(app,subject,recipient,sender,otp,otpValidString);  
-
-        console.log(msg);
+        const msg = await emailSender(
+          app,
+          subject,
+          recipient,
+          sender,
+          otp,
+          HTMLtemplete
+        );  
          res.status(200).send({
              "data" : msg,
              "error" : {}
