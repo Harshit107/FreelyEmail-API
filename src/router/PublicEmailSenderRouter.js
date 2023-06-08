@@ -2,14 +2,8 @@ const express = require('express');
 const router = new express.Router();
 const emailSender = require('../Email/EmailSender');
 const otpVerificationAsString = require('../HTMLtemplets/otpVerification');
+const { validateData, validateRequest } = require("../Validator");
 
-function validateData (data) {
-
-    if(data == undefined || data == '') {
-        return false;
-    }
-    return true;
-}
 
 function sendError (res, errorMessage) {
     console.log('errorMessage :>> ', errorMessage);
@@ -17,31 +11,6 @@ function sendError (res, errorMessage) {
         "data" : {},
         "error" : errorMessage
     })
-}
-
-function validateRequest (req, res) {
-    if(!validateData(req.sender) ){
-        
-        sendError(res,"Enter Valid Sender Email Address");
-        return false;
-    }
-
-    if(!validateData(req.recipient) ){
-        sendError(res,"Enter Valid recipient Email Address");
-        return false;
-    }
-
-    if(!validateData(req.app) ){
-        sendError(res,"Enter Valid App Name");
-        return false;;
-    }
-
-    if(!validateData(req.subject) ){
-        sendError(res,"Enter Valid Subject");
-        return false;;
-    }
-    
-    return true;
 }
 
 
@@ -69,7 +38,7 @@ router.post('/public/email/notification', async (req, res) => {
     try{
        const msg = await emailSender(app,subject,recipient,sender,message,HTMLfile);
         res.status(200).send({
-            "data" : msg,
+            "data" : {msg},
             "error" : {}
         });
     }
@@ -109,7 +78,52 @@ router.post('/public/email/otp', async (req, res) => {
           HTMLtemplete
         );  
          res.status(200).send({
-             "data" : msg,
+             "data" : {msg},
+             "error" : {}
+         });
+     }
+     catch(e){
+        console.log(e);
+         res.status(400).send({
+             "data" : {},
+             "error" : e.response || "Error Occured, Check your Input"
+         });
+     }
+
+})
+
+
+// ---------------------       Email Request OTP With Templete      --------------------------------------------------
+
+router.post('/public/email/otp/request', async (req, res) => {
+
+    const reqEmailBody = req.body;
+    const { sender, recipient, app, subject, withValidTime } = reqEmailBody; //may be single email or array of Email
+
+    if(!validateRequest(reqEmailBody,res))
+        return;
+
+    let otp = "";
+    for (let i = 0; i < 6; i++) {
+        otp += Math.floor(Math.random() * 10);
+    }
+
+    var HTMLtemplete = otpVerificationAsString(app, otp, withValidTime) ;
+
+    try{
+        const msg = await emailSender(
+          app,
+          subject,
+          recipient,
+          sender,
+          otp,
+          HTMLtemplete
+        );  
+         res.status(200).send({
+             "data" : {
+                messageId : msg,
+                otp : otp
+             },
              "error" : {}
          });
      }
