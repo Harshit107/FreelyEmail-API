@@ -5,7 +5,7 @@ require('dotenv').config()
 
 const sendMail = async function (app,subject,recipient,sender, message, HTMLfile) {
 
-
+    //after changing this please review domain
     const authEmail =process.env.SENDINBLUE_EMAIL;
     const authPass = process.env.SENDINBLUE_PASSWORD;
  
@@ -29,7 +29,6 @@ const sendMail = async function (app,subject,recipient,sender, message, HTMLfile
     const info =  await mailTransporter.sendMail(mailDetails);
     return info.messageId;
    
-
 }
  module.exports = sendMail
 
