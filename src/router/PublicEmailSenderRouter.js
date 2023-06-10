@@ -1,7 +1,8 @@
 const express = require("express");
 const router = new express.Router();
 const emailSender = require("../Email/EmailSender");
-const otpVerificationAsString = require("../HTMLtemplets/otpVerification");
+const otpVerificationAsString = require("../HTMLtemplets/otpVerificationTemplate");
+const emailVerificationAsString = require("../HTMLtemplets/emailVerificationTemplate");
 const { validateData, validateRequest } = require("../Validator");
 
 function sendError(res, errorMessage) {
@@ -56,10 +57,18 @@ router.post("/public/email/notification", async (req, res) => {
 
 // ---------------------       Email OTP With Templete      --------------------------------------------------
 
-router.post("/public/email/otp", async (req, res) => {
+router.post("/public/email/verification/otp", async (req, res) => {
   const reqEmailBody = req.body;
-  const { sender, recipient,replyTo, app, subject, otp, withValidTime, HTMLfile } =
-    reqEmailBody; //may be single email or array of Email
+  const {
+    sender,
+    recipient,
+    replyTo,
+    app,
+    subject,
+    otp,
+    withValidTime,
+    HTMLfile,
+  } = reqEmailBody; //may be single email or array of Email
 
   if (!validateRequest(reqEmailBody, res)) return;
 
@@ -95,7 +104,7 @@ router.post("/public/email/otp", async (req, res) => {
 
 // ---------------------       Email Request OTP With Templete      --------------------------------------------------
 
-router.post("/public/email/otp/request", async (req, res) => {
+router.post("/public/email/verification/otp/request", async (req, res) => {
   const reqEmailBody = req.body;
   const { sender, recipient, replyTo, app, subject, withValidTime } =
     reqEmailBody; //may be single email or array of Email
@@ -134,5 +143,54 @@ router.post("/public/email/otp/request", async (req, res) => {
     });
   }
 });
+
+
+
+// --------------------    Email verification with link -------------
+router.post("/public/email/verification/link", async (req, res) => {
+  const reqEmailBody = req.body;
+  const {
+    sender,
+    recipient,
+    replyTo,
+    app,
+    subject,
+    link,
+    withValidTime,
+    HTMLfile,
+  } = reqEmailBody; //may be single email or array of Email
+
+  if (!validateRequest(reqEmailBody, res)) return;
+
+  if (!validateData(link)) {
+    sendError(res, "Enter Valid link");
+    return false;
+  }
+  var HTMLtemplete =
+    HTMLfile || emailVerificationAsString(app, link, withValidTime);
+
+  try {
+    const msg = await emailSender(
+      app,
+      subject,
+      recipient,
+      sender,
+      replyTo,
+      link,
+      HTMLtemplete
+    );
+    res.status(200).send({
+      data: { msg },
+      error: {},
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(400).send({
+      data: {},
+      error: e.response || "Error Occured, Check your Input",
+    });
+  }
+}); 
+
 
 module.exports = router;
