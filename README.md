@@ -31,11 +31,11 @@ It also come with Android and Node Js library which reduces the effort of managi
     * Example : 
    ``` JavaScript
    const sendingObject = {
-      "recipientsEmail" : "Email Address to whom you want to send Email", //  use Array of String for multiple email
-      "appName" : "Your APP Name", 
+      "recipient" : "Email Address to whom you want to send Email", //  use Array of String for multiple email
+      "app" : "Your APP Name", 
       "subject" : "Subject of your email",
-      "senderEmail" : "YourAppEmail", //eg: Your-App-Name // donot include @donot-reply.online // no space or special char
-      "emailContent" : "Email Message",  //your Email containt
+      "sender" : "YourAppEmail", //eg: Your-App-Name // donot include @donot-reply.online // no space or special char
+      "email" : "Email Message",  //your Email containt
       "HTMLfile" : "HTML File if you have" //must be in String and single html formate  
     } 
   ```
