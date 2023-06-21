@@ -193,4 +193,44 @@ router.post("/public/email/verification/link", async (req, res) => {
 }); 
 
 
+// --------------------   Request Email verification with link -------------
+router.post("/public/email/verification/link/request", async (req, res) => {
+  const reqEmailBody = req.body;
+  const {
+    sender,
+    recipient,
+    replyTo,
+    app,
+    subject
+  } = reqEmailBody; //may be single email or array of Email
+
+  if (!validateRequest(reqEmailBody, res)) return;
+
+  var HTMLtemplete =
+    HTMLfile || emailVerificationAsString(app, link, withValidTime);
+
+  try {
+    const msg = await emailSender(
+      app,
+      subject,
+      recipient,
+      sender,
+      replyTo,
+      link,
+      HTMLtemplete
+    );
+    res.status(200).send({
+      data: { msg },
+      error: {},
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(400).send({
+      data: {},
+      error: e.response || "Error Occured, Check your Input",
+    });
+  }
+}); 
+
+
 module.exports = router;
