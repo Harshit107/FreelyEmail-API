@@ -1,39 +1,85 @@
-
-
-
-const emailVerificationAsString = function (appName,link,withValidTime) {
-
+const emailVerificationAsString = function (appName, link, withValidTime, replyTo) {
   var emailVerificationString = `<!DOCTYPE html>
-        <html lang="en">
-          <head>
-              <meta charset="UTF-8">
-              <meta http-equiv="X-UA-Compatible" content="IE=edge">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>Email Verification</title>
-          </head>
-          <body>    
-              <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
-                  <div style="margin:50px auto;width:70%;padding:20px 0">
-                    <div style="border-bottom:1px solid #eee">
-                      <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">${appName}</a>
-                    </div>
-                    <p style="font-size:1.1em">Hi,</p>
-                    <p>Thank you for choosing ${appName}. Use the following Link to complete your procedures. 
-                    ${
-                      withValidTime == undefined
-                        ? ""
-                        : `Link is valid for ${withValidTime}  minutes`
-                    }</p>
-                    <h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${link}</h2>
-                    <p style="font-size:0.9em;">Regards,<br />${appName}</p>
-                    <hr style="border:none;border-top:1px solid #eee" />
-                  </div>
-                </div>
+        <html>
+        <head>
+          <title>Email Verification</title>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              margin: 0;
+              padding: 20px;
+              background-color: #f3f3f3;
+             
+              text-alignment : center;
+            }
 
+            .container {
+              max-width: 400px;
+              margin: 0 auto;
+              padding: 20px;
+              background-color: #fff;
+              border-radius: 10px;
+              box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+              border : 1px solid #ccc;
+            }
+
+            h1 {
+              text-align: center;
+              margin-top: 0;
+              color: #333;
+            }
+
+            p {
+              margin-bottom: 20px;
+              color: #555;
+            }
+            .verification {
+              margin: 0px 100px;
+              text-align : center;  
+            }
+            .verification-link {
+
+              display: block;
+              padding: 10px 20px;
+              font-size: 16px;
+              text-decoration: none;
+              background-color: #4CAF50;
+              color: #fff;
+              border-radius: 5px;
+                          
+              transition: background-color 0.3s;
+            }
+
+            .verification-link:hover {
+              background-color: #45a049;
+            }
+          </style>
+        </head>
+          <body>
+            <div class="container">
+              <h1>Email Verification :  ${appName}</h1>
+              <p>Thank you for signing up with our service! To ensure the security of your account and activate your membership, we kindly request you to verify your email address.<br>
+              Please click the link below to proceed with the verification process ${
+                withValidTime ? "valid for " + withValidTime + " min" : ""
+              }:</p>
+            <div class='verification'>
+              <a class="verification-link" href=${link}>Verify Email</a>
+              <p>${link}</p>
+            </div>
+              
+            <p>
+            If the above link is not clickable, please copy and paste it into your web browser's address bar.<br><br>
+
+            If you did not sign up for an account on our platform, please ignore this email. Rest assured that your email address will not be used without your consent.<br>
+
+            If you have any questions or need further assistance, please feel free to contact our support team at ${replyTo}
+            <p>
+            </div>
           </body>
         </html>
+
        `;
-      return emailVerificationString;
-}
+  return emailVerificationString;
+};
 
 module.exports = emailVerificationAsString;

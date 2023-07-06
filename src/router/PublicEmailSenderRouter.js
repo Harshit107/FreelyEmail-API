@@ -2,7 +2,7 @@ const express = require("express");
 const router = new express.Router();
 const emailSender = require("../Email/EmailSender");
 const otpVerificationAsString = require("../HTMLtemplets/otpVerificationTemplate");
-const emailVerificationAsString = require("../HTMLtemplets/emailVerificationTemplate");
+const emailVerificationViaLink = require("../HTMLtemplets/emailVerificationTemplate");
 const { validateData, validateRequest } = require("../Validator");
 
 function sendError(res, errorMessage) {
@@ -167,7 +167,7 @@ router.post("/public/email/verification/link", async (req, res) => {
     return false;
   }
   var HTMLtemplete =
-    HTMLfile || emailVerificationAsString(app, link, withValidTime);
+    HTMLfile || emailVerificationViaLink(app, link, withValidTime, replyTo);
 
   try {
     const msg = await emailSender(
@@ -207,7 +207,7 @@ router.post("/public/email/verification/link/request", async (req, res) => {
   if (!validateRequest(reqEmailBody, res)) return;
 
   var HTMLtemplete =
-    HTMLfile || emailVerificationAsString(app, link, withValidTime);
+    HTMLfile || emailVerificationAsString(app, link, withValidTime, replyTo);
 
   try {
     const msg = await emailSender(
