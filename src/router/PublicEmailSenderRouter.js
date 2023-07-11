@@ -94,7 +94,6 @@ router.post("/public/email/verification/otp", async (req, res) => {
       error: {},
     });
   } catch (e) {
-    console.log(e);
     res.status(400).send({
       data: {},
       error: e.response || "Error Occured, Check your Input",
