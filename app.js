@@ -11,11 +11,8 @@ app.use(cors());
 //parsing body
 app.use(express.json())
 
-//router
+
 app.use(emailRouter)
-
-
-
 
 
 app.get('/checkServer', (req, res) => {
