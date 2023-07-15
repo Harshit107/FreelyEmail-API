@@ -17,6 +17,9 @@
     "mongoose": "^7.3.1",
     "nodemailer": "^6.9.0"
   },
+    "engines": {
+    "node": ">=14.20.1"
+  },
   "devDependencies": {
     "nodemon": "^2.0.20"
   }
