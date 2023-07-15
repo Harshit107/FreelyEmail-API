@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-
+require('./src/db/mongoose')
 const app = express();
 const emailRouter = require('./src/router/PublicEmailSenderRouter');
 

@@ -4,7 +4,7 @@ const emailSender = require("../Email/EmailSender");
 const otpVerificationAsString = require("../HTMLtemplets/otpVerificationTemplate");
 const emailVerificationViaLink = require("../HTMLtemplets/emailVerificationTemplate");
 const { validateData, validateRequest } = require("../Validator");
-const StoreEmail = require('../model/EmailStore');
+const StoreEmail = require("../model/StoreEmail");
 
 function sendError(res, errorMessage) {
   console.log("errorMessage :>> ", errorMessage);
@@ -14,14 +14,16 @@ function sendError(res, errorMessage) {
   });
 }
 
-const StoreEmailFun = async (data) => {
+const StoreEmailId = async (data) => {
+  try {
+    const storeNewEmail = await new StoreEmail(data);
+    await storeNewEmail.save();
 
-  const storeNewEmail = await new StoreEmail(data);
-  console.log(storeNewEmail);
-  // await StoreEmail.save();
-  console.log(storeNewEmail)
+  } catch (e) {
+    console.log(e.message);
+  }
 
-}
+};
 
 // /---------------    Simple Email  -------------------------------/
 
@@ -53,13 +55,12 @@ router.post("/public/email/notification", async (req, res) => {
       message,
       HTMLfile
     );
-    await StoreEmailFun({ ...req.body, messageId: msg });
+    await StoreEmailId({ ...req.body, messageId: msg });
     res.status(200).send({
       data: { msg },
       error: {},
     });
   } catch (e) {
-    console.log(e.message);
     res.status(400).send({
       data: {},
       error: e.message,
@@ -67,7 +68,9 @@ router.post("/public/email/notification", async (req, res) => {
   }
 });
 
-// ---------------------       Email OTP With Templete      --------------------------------------------------
+/* -------------------------------------------------------------------------- */
+/*                           Email OTP With Templete                          */
+/* -------------------------------------------------------------------------- */
 
 router.post("/public/email/verification/otp", async (req, res) => {
   const reqEmailBody = req.body;
@@ -101,6 +104,7 @@ router.post("/public/email/verification/otp", async (req, res) => {
       otp,
       HTMLtemplete
     );
+    await StoreEmailId({ ...req.body, messageId: msg });
     res.status(200).send({
       data: { msg },
       error: {},
@@ -139,6 +143,7 @@ router.post("/public/email/verification/otp/request", async (req, res) => {
       otp,
       HTMLtemplete
     );
+    await StoreEmailId({ ...req.body, messageId: msg });
     res.status(200).send({
       data: {
         messageId: msg,
@@ -147,15 +152,12 @@ router.post("/public/email/verification/otp/request", async (req, res) => {
       error: {},
     });
   } catch (e) {
-    console.log(e);
     res.status(400).send({
       data: {},
       error: e.response || "Error Occured, Check your Input",
     });
   }
 });
-
-
 
 // --------------------    Email verification with link -------------
 router.post("/public/email/verification/link", async (req, res) => {
@@ -190,6 +192,7 @@ router.post("/public/email/verification/link", async (req, res) => {
       link,
       HTMLtemplete
     );
+    await StoreEmailId({ ...req.body, messageId: msg });
     res.status(200).send({
       data: { msg },
       error: {},
@@ -201,19 +204,17 @@ router.post("/public/email/verification/link", async (req, res) => {
       error: e.response || "Error Occured, Check your Input",
     });
   }
-}); 
-
+});
 
 // --------------------   Request Email verification with link -------------
+/* -------------------------------------------------------------------------- */
+/*                              Work in progress                              */
+/* -------------------------------------------------------------------------- */
+
+/*
 router.post("/public/email/verification/link/request", async (req, res) => {
   const reqEmailBody = req.body;
-  const {
-    sender,
-    recipient,
-    replyTo,
-    app,
-    subject
-  } = reqEmailBody; //may be single email or array of Email
+  const { sender, recipient, replyTo, app, subject } = reqEmailBody; //may be single email or array of Email
 
   if (!validateRequest(reqEmailBody, res)) return;
 
@@ -230,18 +231,18 @@ router.post("/public/email/verification/link/request", async (req, res) => {
       link,
       HTMLtemplete
     );
+    await StoreEmailId({ ...req.body, messageId: msg });
     res.status(200).send({
       data: { msg },
       error: {},
     });
   } catch (e) {
-    console.log(e);
     res.status(400).send({
       data: {},
       error: e.response || "Error Occured, Check your Input",
     });
   }
-}); 
-
+});
+*/
 
 module.exports = router;

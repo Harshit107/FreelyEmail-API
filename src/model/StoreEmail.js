@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
-const emailStoreSchema = new mongoose.Schema({
+const storeEmailSchema = new mongoose.Schema(
+  {
     sender: {
       type: String,
       required: true,
@@ -9,6 +10,9 @@ const emailStoreSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
+    replyTo: {
+      type: String,
+    },
     messageId: {
       type: String,
       required: true,
@@ -16,12 +20,12 @@ const emailStoreSchema = new mongoose.Schema({
     app: {
       type: String,
       required: true,
-    }
+    },
   },
   {
     timestamps: true,
   }
 );
 
-const emailStore = mongoose.model("Store",emailStoreSchema);
+const emailStore = mongoose.model("Store", storeEmailSchema);
 module.exports = emailStore;
