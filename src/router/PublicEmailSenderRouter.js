@@ -55,6 +55,7 @@ router.post("/public/email/notification", async (req, res) => {
       message,
       HTMLfile
     );
+    console.log("Success >>>>> ", msg);
     await StoreEmailId({ ...req.body, messageId: msg });
     res.status(200).send({
       data: { msg },

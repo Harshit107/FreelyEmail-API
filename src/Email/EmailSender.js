@@ -34,7 +34,7 @@ const sendMail = async function (
     html: HTMLfile,
   };
   const info = await mailTransporter.sendMail(mailDetails);
-  return info.messageId;
+  return info.messageId.replace('<',"").replace('>',"");
 };
  module.exports = sendMail
 
