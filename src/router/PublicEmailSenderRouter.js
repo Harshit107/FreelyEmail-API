@@ -4,6 +4,7 @@ const emailSender = require("../Email/EmailSender");
 const otpVerificationAsString = require("../HTMLtemplets/otpVerificationTemplate");
 const emailVerificationViaLink = require("../HTMLtemplets/emailVerificationTemplate");
 const { validateData, validateRequest } = require("../Validator");
+const StoreEmail = require('../model/EmailStore');
 
 function sendError(res, errorMessage) {
   console.log("errorMessage :>> ", errorMessage);
@@ -11,6 +12,15 @@ function sendError(res, errorMessage) {
     data: {},
     error: errorMessage,
   });
+}
+
+const StoreEmailFun = async (data) => {
+
+  const storeNewEmail = await new StoreEmail(data);
+  console.log(storeNewEmail);
+  // await StoreEmail.save();
+  console.log(storeNewEmail)
+
 }
 
 // /---------------    Simple Email  -------------------------------/
@@ -43,14 +53,16 @@ router.post("/public/email/notification", async (req, res) => {
       message,
       HTMLfile
     );
+    await StoreEmailFun({ ...req.body, messageId: msg });
     res.status(200).send({
       data: { msg },
       error: {},
     });
   } catch (e) {
+    console.log(e.message);
     res.status(400).send({
       data: {},
-      error: e.response,
+      error: e.message,
     });
   }
 });
