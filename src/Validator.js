@@ -1,10 +1,17 @@
+function sendError(res, errorMessage) {
+  console.log("errorMessage :>> ", errorMessage);
+  res.status(400).send({
+    data: {},
+    error: errorMessage,
+  });
+}
 
-const validateData =  function (data) {
+const validateData = function (data) {
   if (data == undefined || data == "") {
     return false;
   }
   return true;
-}
+};
 
 function validateRequest(req, res) {
   if (!validateData(req.sender)) {
@@ -29,7 +36,6 @@ function validateRequest(req, res) {
 
   return true;
 }
-
 
 module.exports = {
   validateData,
