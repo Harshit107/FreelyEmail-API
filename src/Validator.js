@@ -1,7 +1,6 @@
 function sendError(res, errorMessage) {
-  console.log("errorMessage :>> ", errorMessage);
   res.status(400).send({
-    data: {},
+    data: "",
     error: errorMessage,
   });
 }
@@ -14,20 +13,24 @@ const validateData = function (data) {
 };
 
 function validateRequest(req, res) {
+
   if (!validateData(req.sender)) {
     sendError(res, "Enter Valid Sender Email Address");
     return false;
   }
 
   if (!validateData(req.recipient)) {
+    sendError(res, "Enter Valid recipient Email Address");
     return false;
   }
 
   if (!validateData(req.app)) {
+    sendError(res, "Enter Valid App Name");
     return false;
   }
 
   if (!validateData(req.subject)) {
+    sendError(res, "Enter Valid Subject");
     return false;
   }
 

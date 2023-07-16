@@ -9,7 +9,7 @@ const StoreEmail = require("../model/StoreEmail");
 function sendError(res, errorMessage) {
   console.log("errorMessage :>> ", errorMessage);
   res.status(400).send({
-    data: {},
+    data: "",
     error: errorMessage,
   });
 }
@@ -31,13 +31,11 @@ router.post("/public/email/notification", async (req, res) => {
   const reqEmailBody = req.body;
   const { sender, recipient, replyTo, app, subject, message, HTMLfile } =
     reqEmailBody; //may be single email or array of Email
-
   // const recipient = reqEmailBody.recipient; //may be single email or array of Email
   // const app = reqEmailBody.app;   //eg : google@donot-reply.online
   // const subject = reqEmailBody.subject;   // Credit Notification
   // const message = reqEmailBody.message; // your orignal Content
   // const HTMLfile = reqEmailBody.HTMLfile; // Single HTML as string
-
   if (!validateRequest(reqEmailBody, res)) return;
 
   if (!validateData(message) && !validateData(HTMLfile)) {
@@ -55,7 +53,6 @@ router.post("/public/email/notification", async (req, res) => {
       message,
       HTMLfile
     );
-    console.log("Success >>>>> ", msg);
     await StoreEmailId({ ...req.body, messageId: msg });
     res.status(200).send({
       data: { msg },
@@ -199,7 +196,6 @@ router.post("/public/email/verification/link", async (req, res) => {
       error: {},
     });
   } catch (e) {
-    console.log(e);
     res.status(400).send({
       data: {},
       error: e.response || "Error Occured, Check your Input",
