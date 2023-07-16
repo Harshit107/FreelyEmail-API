@@ -144,8 +144,8 @@ router.post("/public/email/verification/otp/request", async (req, res) => {
     await StoreEmailId({ ...req.body, messageId: msg });
     res.status(200).send({
       data: {
-        messageId: msg,
-        otp: otp,
+        msg,
+        otp
       },
       error: {},
     });
