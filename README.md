@@ -7,8 +7,6 @@ To use the API, a developer needs to make an HTTP request to the service with th
 
 One of the main benefit of this FreelyEmail API is that it simplifies the process of sending emails for developers who may not have the time or resources to set up their own email infrastructure. It also provides an added layer of security, as it allows developers to send emails without disclosing their own domain or email server information.
 
-The API is built on top of a scalable and reliable infrastructure that ensures high availability and performance. It also provides a simple and clear documentation that makes it easy for developers to integrate the API into their applications.
-
 Summary (😂):
 FreelyEmail is build on Node.js that makes it easy to send automated emails without writing any code. It doesnot require any email and Server configuration. Just call the API with the required data and boooom!!! Email Send 
 
