@@ -1,164 +1,150 @@
+# FreelyEmail-API
 
-# FreelyEmail (API)
+A centralized, scalable, and modular REST API designed to automatically dispatch customized emails, notifications, and verification links across different applications. Originally built to handle automated emails for an external project, this service is now fully functional, modular, and easy to extend.
 
-FreelyEmail API is a RESTful web service that provides developers with an easy-to-use interface for sending emails from within their applications. It allows developers to send emails quickly and easily without having to set up their own SMTP server or domain.
+## 🚀 Key Features
 
-To use the API, a developer needs to make an HTTP request to the service with the required data for sending the email, such as the recipient's email address, subject, and message body. The API then takes care of the rest, including formatting and sending the email using the DoNot-Reply.online domain.
+- **Decoupled Architecture**: Follows best practices with `Controller`, `Service`, and `Routes` layers.
+- **Rich HTML Templates**: Includes out-of-the-box, modern, and responsive HTML email templates for OTPs and Links.
+- **Dynamic Content Support**: Inject dynamic parameters (e.g., OTP codes, App Name, time validity).
+- **Centralized Error Handling**: Structured error responses and APIError classes.
+- **Robust Validations**: Enforced standard API payload validation before processing.
+- **Multiple Email Types**: Support for plain text, internal templates, and user-provided HTML templates.
+- **MongoDB Logging**: Automatically tracks and stores all dispatched email metadata for robust auditing.
 
-One of the main benefit of this FreelyEmail API is that it simplifies the process of sending emails for developers who may not have the time or resources to set up their own email infrastructure. It also provides an added layer of security, as it allows developers to send emails without disclosing their own domain or email server information.
+## 📁 Directory Structure
 
-Summary (😂):
-FreelyEmail is build on Node.js that makes it easy to send automated emails without writing any code. It doesnot require any email and Server configuration. Just call the API with the required data and boooom!!! Email Send 
+```text
+📦 FreelyEmail-API
+ ┣ 📂 src
+ ┃ ┣ 📂 config         # Database and configuration files
+ ┃ ┣ 📂 controllers    # Request/Response handlers
+ ┃ ┣ 📂 middlewares    # Express middlewares (e.g. global error handler)
+ ┃ ┣ 📂 models         # Mongoose database schemas
+ ┃ ┣ 📂 routes         # API endpoint definitions
+ ┃ ┣ 📂 services       # Business logic (e.g. nodemailer implementation)
+ ┃ ┣ 📂 templates      # Modern HTML email templates
+ ┃ ┗ 📂 utils          # Helper utilities (validations, catchAsync)
+ ┣ 📜 app.js           # API entry point
+ ┣ 📜 .env             # Environment Variables
+ ┗ 📜 package.json     # Project Metadata & dependencies
+```
 
+## 🛠 Prerequisites
 
-It also come with Android and Node Js library which reduces the effort of managing APIs and handling errors.
+Make sure you have the following installed:
+- [Node.js](https://nodejs.org/en/) >= 14.x
+- [MongoDB](https://www.mongodb.com/) (Local or Atlas)
+- An SMTP provider account (e.g., [Sendinblue / Brevo](https://www.brevo.com/), SendGrid, NodeMailer)
 
-# How to use:
+## ⚙️ Environment Variables
 
-## Base api structure  :https://email.api.harshit107.tech/YOUR-API-REQUEST
-
-  
-  #### * Send Simple Email :  https://email.api.harshit107.tech/public/email/notification
-  ```
-   * Request Type : POST
-   * Body : { sender, recipient, replyTo, app, subject, message, HTMLfile }
- ```
-  * Note : 
-    * parameter must have same name as mentioned above
-    * sender email should not contain any domain, we will add @donot-reply.online at the end.
-    * Example : 
-   ``` JavaScript
-   const sendingObject = {
-      "recipient" : "Email Address to whom you want to send Email", //  use Array of String for multiple email
-      "app" : "Your App Name", 
-      "replyTo" : "Your contact Email " // User can directly reply to this email
-      "subject" : "Subject of your email",
-      "sender" : "YourAppEmail", //eg: Your-App-Name // donot include @donot-reply.online // no space or special char
-      "message" : "Email Message",  //your Email containt
-      "HTMLfile" : "HTML File if you have" //must be in String and single html formate  
-    } 
-  ```
-  
-   
-  #### * Send OTP Email : https://email.api.harshit107.tech/public/email/verification/otp
-  ```
-   * Request Type : POST
-   * Body : {  sender,recipient, replyTo,  app, subject, otp, withValidTime,HTMLfile}
- ```
-  * Note : 
-    * parameter must have same name as mentioned above
-    * sender email should not contain any domain, we will add @donot-reply.online at the end.
-    * Example : 
-   ``` JavaScript
-  const msgBody = {
-        "app" : App Name,
-        "subject" : Subject,
-        "recipient" : recipients Email,
-        "replyTo" : ReplyTo
-        "sender" : Sender Email,
-        "otp" : otp,  // must 
-        "withValidTime" : withValidTime, // not necessary 
-        "HTMLfile" : HTMLFile
-    }
-  ```
-  
-  # Response
-  
-  Every Request will have object as response which will contain `data and error`.
-  
-  ### Success
-  ``` JavaScript
-  {
-    data : "Message Id",
-    error : {}
-  }
-  
-  ```
-  Status code  : 200.
-  
-  ### Error
-  ``` JavaScript
-  {
-    data : {},
-    error : "Error Reason"
-  }
-  
-  ```
-  Status code  : 400.
-  
-  
-  
-   
-  #### * Request Auto OTP Email : https://email.api.harshit107.tech/public/email/verification/otp/request
-  ```
-   * Request Type : POST
-   * Body : {  sender, recipient, replyTo, app, subject, withValidTime}
- ```
-  * Note : 
-    * parameter must have same name as mentioned above
-    * sender email should not contain any domain, we will add @donot-reply.online at the end.
-    * Example : 
-   ``` JavaScript
-  const msgBody = {
-        "app" : App Name,
-        "subject" : Subject,
-        "recipient" : recipients Email,
-        "replyTo" : ReplyTo
-        "sender" : Sender Email,
-        "withValidTime" : withValidTime, // Optional 
-    }
-  ```
-  
-  # Response
-  
-  Every Request will have object as response which will contain `data and error`.
-  
-  ### Success
-  ``` JavaScript
-  {
-    data : {msgId, OTP}, //OTP : It is a 6 digit passcode that user received in mail, so use this OTP to verify user in Client side.
-    error : {}
-  }
-  
-  ```
-  Status code  : 200.
-  
-  ### Error
-  ``` JavaScript
-  {
-    data : {},
-    error : "Error Reason"
-  }
-  
-  ```
-  Status code  : 400.
-  
- 
-
-## Installation -------------   ( only for those who want to contribute )    --------------
-
-Install my-project with npm
+Create a `.env` file in the root folder and configure the following parameters:
 
 ```bash
-1 Clone the repository to your local machine using git clone
-https://github.com/Harshit107/FreelyEmail-Api.git
-2 Navigate to the project folder using cd Auto-Email-Sender
-3 Install the dependencies using npm install
+PORT=3000
+MONGO_URL_PROD=mongodb+srv://<username>:<password>@cluster.mongodb.net/freelyemail?retryWrites=true&w=majority
+SENDINBLUE_EMAIL=your-smtp-email@example.com
+SENDINBLUE_PASSWORD=your-smtp-password
 ```
-    
-## Environment Variables 
 
-To run this project, you will need to add the following environment variables to your .env file. || 
-__contact for .env : contact@harshit107.tech__
+## 💻 Installation & Running
 
-`SendInBlue Email`
+1. **Clone the repository:**
+   ```bash
+   git clone <repository_url>
+   cd FreelyEmail-API
+   ```
 
-`SendInBlue Password`
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
+3. **Start the server for Development:**
+   ```bash
+   npm run dev
+   ```
 
+4. **Start the server for Production:**
+   ```bash
+   npm start
+   ```
 
-## Demo
+## 🔌 API Endpoints
 
-[Send your First Email ](https://test.donot-reply.online/)    // under developement
+**Base URL**: `/api/v1/emails`
 
+### 1. General Notification Email
+Send a simple text or custom HTML email.
+- **Endpoint:** `POST /send`
+- **Body:**
+  ```json
+  {
+    "sender": "noreply",
+    "recipient": "user@example.com",
+    "replyTo": "support@example.com",
+    "app": "My Awesome App",
+    "subject": "Welcome to our app!",
+    "message": "Thank you for joining us.",
+    "HTMLfile": "<html>...</html>" 
+  }
+  ```
 
+### 2. Send OTP with Template
+Send an OTP to a user. You can generate your own OTP and pass it in the request.
+- **Endpoint:** `POST /otp/send`
+- **Body:**
+  ```json
+  {
+    "sender": "auth",
+    "recipient": "user@example.com",
+    "app": "My Awesome App",
+    "subject": "Your Verification Code",
+    "otp": "123456",
+    "withValidTime": 10
+  }
+  ```
+
+### 3. Request Auto-Generated OTP 
+Let the API generate a secure 6-digit OTP and send it via email automatically. Returns the OTP in the response body.
+- **Endpoint:** `POST /otp/request`
+- **Body:**
+  ```json
+  {
+    "sender": "auth",
+    "recipient": "user@example.com",
+    "app": "My Awesome App",
+    "subject": "Your Verification Code",
+    "withValidTime": 10
+  }
+  ```
+
+### 4. Send Verification Link
+Send an email with an action button for the user to click and verify their account.
+- **Endpoint:** `POST /verification/link`
+- **Body:**
+  ```json
+  {
+    "sender": "auth",
+    "recipient": "user@example.com",
+    "app": "My Awesome App",
+    "subject": "Verify Your Email Address",
+    "link": "https://myapp.com/verify?token=abcxyz",
+    "withValidTime": 30
+  }
+  ```
+
+### 5. Health Check
+Check whether the service is running.
+- **Endpoint:** `GET /api/v1/health`
+- **Response:**
+  ```json
+  {
+    "success": true,
+    "message": "Server is working perfectly fine."
+  }
+  ```
+
+## 🤝 Contributing
+Issues and Pull Requests are welcome to make this API even more robust.

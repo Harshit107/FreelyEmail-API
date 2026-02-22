@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const storeEmailSchema = new mongoose.Schema(
+const emailSchema = new mongoose.Schema(
   {
     sender: {
       type: String,
@@ -21,11 +21,16 @@ const storeEmailSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    type: {
+      type: String,
+      enum: ["notification", "otp", "link"],
+      default: "notification",
+    },
   },
   {
     timestamps: true,
   }
 );
 
-const emailStore = mongoose.model("Store", storeEmailSchema);
-module.exports = emailStore;
+const Email = mongoose.model("Email", emailSchema);
+module.exports = Email;
