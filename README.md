@@ -1,10 +1,49 @@
-# FreelyEmail-API
+# FreelyEmail-API by Harshit (Harshit107) 🚀
 
-A centralized, scalable, and modular REST API designed to automatically dispatch customized emails, notifications, and verification links across different applications. Originally built to handle automated emails for an external project, this service is now fully functional, modular, and easy to extend.
+A centralized, scalable, and modular REST API designed by **Harshit Keshari** ([@Harshit107](https://github.com/Harshit107)) to automatically dispatch customized emails, notifications, and verification links across different applications. Originally built to handle automated emails for an external project, this service is now fully functional, modular, and easy to extend. Perfect for developers looking for a robust Node.js email microservice built by Harshit.
+
+## ✨ Architecture Flow Diagram
+
+```mermaid
+sequenceDiagram
+    participant App as Client App (Developer)
+    participant SDK as FreelyEmail Client SDK
+    participant NativeFetch as Node.js Native Fetch
+    participant Router as API /src/routes
+    participant Controller as API /src/controllers
+    participant Service as API /src/services
+    participant SMTP as Sendinblue SMTP
+    participant DB as MongoDB
+
+    App->>SDK: new FreelyEmailClient()
+    Note over App,SDK: Developer initiates the SDK (TypeScript supported)
+    
+    App->>SDK: sendOTP({ sender: "auth", ... })
+    SDK->>NativeFetch: RequestManager checks payload, sends HTTP POST to /api/v1/emails/otp/send
+    
+    NativeFetch->>Router: HTTP POST payload arrives
+    Router->>Controller: Route matches, passes to sendOtp() layer
+    
+    Controller->>Controller: catchAsync & Validator check payload fields
+    alt If Validation Fails
+        Controller-->>SDK: 400 Bad Request
+        SDK-->>App: throws FreelyEmailAPIError
+    end
+    
+    Controller->>Service: payload valid, sendMail(...)
+    Service->>SMTP: Connects via nodemailer & sends HTML email
+    SMTP-->>Service: msgId returned
+    
+    Service->>DB: Log the transaction asynchronously (saveEmailRecord)
+    
+    Controller-->>NativeFetch: 200 OK { success: true, messageId: ... }
+    NativeFetch-->>SDK: Parse JSON payload
+    SDK-->>App: Return Successful APIResponse
+```
 
 ## 🚀 Key Features
 
-- **Decoupled Architecture**: Follows best practices with `Controller`, `Service`, and `Routes` layers.
+- **Decoupled Architecture**: Follows best practices with `Controller`, `Service`, and `Routes` layers. Engineered for scale.
 - **Rich HTML Templates**: Includes out-of-the-box, modern, and responsive HTML email templates for OTPs and Links.
 - **Dynamic Content Support**: Inject dynamic parameters (e.g., OTP codes, App Name, time validity).
 - **Centralized Error Handling**: Structured error responses and APIError classes.
