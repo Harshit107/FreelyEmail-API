@@ -1,47 +1,137 @@
+/**
+ * Modern HTML Template Generator for OTP Verification Emails
+ * Features:
+ * - Premium card layout with gradient accent line
+ * - Beautiful glass-style OTP display box with letter spacing
+ * - Countdown validity badge
+ * - Security warning callout
+ * - Mobile responsive table structure for maximum email client compatibility
+ */
+
 const getOtpTemplate = (appName, otp, withValidTime) => {
-  const validityText = withValidTime ? `This OTP is valid for <strong>${withValidTime} minutes</strong>.` : "Please use this OTP to complete your verification.";
-  
+  const safeApp = appName || "FreelyEmail";
+  const safeOtp = otp || "000000";
+  const year = new Date().getFullYear();
+  const validityNotice = withValidTime
+    ? `Expires in <strong>${withValidTime} minutes</strong>`
+    : `Expires shortly`;
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OTP Verification</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Your Verification Code</title>
+  <!--[if mso]>
+  <style type="text/css">
+    body, table, td, p, a, span { font-family: Arial, sans-serif !important; }
+  </style>
+  <![endif]-->
 </head>
-<body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f7fa; margin: 0; padding: 0;">
-    <div style="max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: hidden;">
-        
-        <!-- Header -->
-        <div style="background-color: #00466a; padding: 24px; text-align: center;">
-            <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 600; letter-spacing: 1px;">${appName}</h1>
-        </div>
+<body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; color: #1e293b;">
+  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8fafc; padding: 40px 16px;">
+    <tr>
+      <td align="center">
+        <!-- Main Card Wrapper -->
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 540px; background-color: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);">
+          
+          <!-- Top Gradient Accent -->
+          <tr>
+            <td style="height: 4px; background: linear-gradient(90deg, #4f46e5 0%, #6366f1 50%, #06b6d4 100%);"></td>
+          </tr>
 
-        <!-- Body -->
-        <div style="padding: 40px 30px; color: #333333;">
-            <p style="font-size: 16px; margin-bottom: 24px;">Hi there,</p>
-            <p style="font-size: 16px; line-height: 1.6; margin-bottom: 30px; color: #555555;">
-                Thank you for choosing <strong>${appName}</strong>. ${validityText}
-            </p>
-            
-            <div style="text-align: center; margin: 30px 0;">
-                <span style="display: inline-block; font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #00466a; background: #f0f4f8; padding: 12px 24px; border-radius: 6px; border: 1px solid #e1e8ed;">
-                    ${otp}
-                </span>
-            </div>
-            
-            <p style="font-size: 14px; color: #888888; text-align: center; margin-top: 30px;">
-                If you did not request this OTP, please ignore this email.
-            </p>
-        </div>
+          <!-- Header / Brand -->
+          <tr>
+            <td style="padding: 32px 36px 16px 36px;" align="center">
+              <div style="display: inline-block; padding: 6px 14px; background-color: #eef2ff; border-radius: 10px;">
+                <span style="font-size: 16px; font-weight: 700; color: #4338ca; letter-spacing: -0.3px;">${safeApp}</span>
+              </div>
+            </td>
+          </tr>
 
-        <!-- Footer -->
-        <div style="background-color: #f9fbfd; padding: 20px; text-align: center; border-top: 1px solid #eeeeee;">
-            <p style="font-size: 13px; color: #999999; margin: 0;">
-                &copy; ${new Date().getFullYear()} ${appName}. All rights reserved.
-            </p>
-        </div>
+          <!-- Title & Subtitle -->
+          <tr>
+            <td style="padding: 8px 36px 20px 36px; text-align: center;">
+              <h1 style="margin: 0 0 10px 0; font-size: 22px; font-weight: 700; color: #0f172a; letter-spacing: -0.4px;">
+                Verification Code
+              </h1>
+              <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #64748b;">
+                Use the one-time code below to authenticate your request for <strong>${safeApp}</strong>.
+              </p>
+            </td>
+          </tr>
 
-    </div>
+          <!-- OTP Display Card -->
+          <tr>
+            <td style="padding: 10px 36px 24px 36px;" align="center">
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto; background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px 28px;">
+                <tr>
+                  <td align="center">
+                    <span style="font-family: 'SF Mono', Consolas, 'Roboto Mono', 'Courier New', monospace; font-size: 36px; font-weight: 800; letter-spacing: 10px; color: #1e1b4b; text-indent: 10px; display: inline-block;">
+                      ${safeOtp}
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding-top: 8px;">
+                    <div style="display: inline-block; padding: 3px 10px; background-color: #fef3c7; border: 1px solid #fde68a; border-radius: 6px;">
+                      <span style="font-size: 12px; font-weight: 600; color: #92400e;">
+                        ⏱ ${validityNotice}
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Security Notice -->
+          <tr>
+            <td style="padding: 0 36px 28px 36px;">
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8fafc; border: 1px solid #f1f5f9; border-radius: 10px; padding: 14px 16px;">
+                <tr>
+                  <td style="font-size: 12px; line-height: 1.6; color: #64748b; text-align: left;">
+                    🔒 <strong>Security Tip:</strong> Never share this code with anyone. Our team will never ask for your verification code. If you didn't request this, you can safely disregard this message.
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Divider -->
+          <tr>
+            <td style="padding: 0 36px;">
+              <div style="height: 1px; background-color: #f1f5f9;"></div>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 22px 36px; background-color: #fafbfd; text-align: center;">
+              <p style="margin: 0 0 6px 0; font-size: 12px; color: #64748b; font-weight: 400;">
+                Powered by <strong>${safeApp}</strong> &bull; Protected by <span style="color: #4f46e5; font-weight: 600;">FreelyEmail</span>
+              </p>
+              <p style="margin: 0; font-size: 11px; color: #94a3b8;">
+                &copy; ${year} ${safeApp}. All rights reserved.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+
+        <!-- Microfooter -->
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 540px; margin-top: 18px;">
+          <tr>
+            <td align="center" style="font-size: 11px; color: #94a3b8; line-height: 1.5; padding: 0 16px;">
+              This is an automated system message. Replies to this address are not monitored.
+            </td>
+          </tr>
+        </table>
+
+      </td>
+    </tr>
+  </table>
 </body>
 </html>`;
 };

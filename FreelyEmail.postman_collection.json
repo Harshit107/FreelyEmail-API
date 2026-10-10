@@ -1,0 +1,160 @@
+{
+	"info": {
+		"_postman_id": "freelyemail-api-collection-v1",
+		"name": "FreelyEmail API v1",
+		"description": "Postman Collection for FreelyEmail API v1 with standardized JSON envelope and Brevo dispatch support.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/health",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"health"
+					]
+				},
+				"description": "Pings the API to check server status and health."
+			},
+			"response": []
+		},
+		{
+			"name": "Send Notification Email",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"to\": \"recipient@example.com\",\n  \"subject\": \"Welcome to FreelyEmail!\",\n  \"text\": \"Hello from FreelyEmail API. Your email system is up and running!\",\n  \"html\": \"<div style=\\\"font-family: Arial, sans-serif; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;\\\"><h2>Welcome to FreelyEmail! 🎉</h2><p>This is a rich HTML test email sent via <strong>FreelyEmail API</strong>.</p></div>\",\n  \"appName\": \"FreelyEmail Demo\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/emails/send",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"emails",
+						"send"
+					]
+				},
+				"description": "Sends a standard notification email with HTML and text content."
+			},
+			"response": []
+		},
+		{
+			"name": "Request OTP (Auto-Generated)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"to\": \"recipient@example.com\",\n  \"length\": 6,\n  \"withValidTime\": 10,\n  \"appName\": \"FreelyEmail Demo\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/emails/otp/request",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"emails",
+						"otp",
+						"request"
+					]
+				},
+				"description": "Generates a secure numeric OTP, emails it to the recipient, and returns the OTP and messageId in the data payload."
+			},
+			"response": []
+		},
+		{
+			"name": "Send OTP (User-Provided)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"to\": \"recipient@example.com\",\n  \"otp\": \"584920\",\n  \"withValidTime\": 5,\n  \"appName\": \"FreelyEmail Demo\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/emails/otp/send",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"emails",
+						"otp",
+						"send"
+					]
+				},
+				"description": "Sends an email with a custom OTP provided in the request body."
+			},
+			"response": []
+		},
+		{
+			"name": "Send Verification Link",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"to\": \"recipient@example.com\",\n  \"link\": \"https://yourwebsite.com/auth/verify?token=example_secure_token_123\",\n  \"subject\": \"Confirm Your Account\",\n  \"buttonText\": \"Verify Email\",\n  \"withValidTime\": 15,\n  \"appName\": \"FreelyEmail Demo\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/emails/verification/link",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"emails",
+						"verification",
+						"link"
+					]
+				},
+				"description": "Sends a verification/action link styled as an interactive button inside an email."
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		}
+	]
+}
