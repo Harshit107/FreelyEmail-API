@@ -6,10 +6,18 @@
 const { ECOSYSTEM_URLS } = require('../constants');
 
 const getServiceConfig = () => {
-  const baseUrl = process.env.LOGGING_SERVICE_URL || ECOSYSTEM_URLS.LOGGER_API;
-  const apiKey = process.env.LOGGING_SERVICE_API_KEY || process.env.PRIVATE_API_KEY;
+  let baseUrl = process.env.LOGGING_SERVICE_URL;
+  // Fall back to central logger API domain if not configured or pointing to localhost in production
+  if (!baseUrl || (process.env.NODE_ENV === 'production' && baseUrl.includes('localhost'))) {
+    baseUrl = ECOSYSTEM_URLS.LOGGER_API;
+  }
+  const apiKey =
+    process.env.LOGGING_SERVICE_API_KEY ||
+    process.env.PRIVATE_API_KEY ||
+    '50b65cea-691b-406e-9d28-0718b86abe98';
   return { baseUrl: baseUrl.replace(/\/$/, ''), apiKey };
 };
+
 
 /**
  * Sends a log entry to the central logging service with timeout and fail-safe error suppression
