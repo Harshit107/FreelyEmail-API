@@ -41,6 +41,7 @@ const sendOtp = catchAsync(async (req, res) => {
     recipient,
     replyTo,
     app,
+    subject,
     messageId,
     type: "otp",
   });
@@ -85,6 +86,7 @@ const requestOtp = catchAsync(async (req, res) => {
     recipient,
     replyTo,
     app,
+    subject,
     messageId,
     type: "otp",
   });

@@ -66,6 +66,17 @@ const errorHandler = (err, req, res, next) => {
   // In production, we don't leak full 500 crash stack traces to the client
   if (statusCode === 500) {
     console.error("Internal Server Error:", err);
+    try {
+      const centralLogger = require("../services/centralLogger.service");
+      centralLogger.logError({
+        serviceName: "FreelyEmail-API",
+        level: "error",
+        message,
+        errorCode,
+        stackTrace: err.stack,
+        metadata: { path: req.originalUrl, method: req.method },
+      }).catch(() => {});
+    } catch (_) {}
   }
 
   const errorPayload = {

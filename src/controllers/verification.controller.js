@@ -41,6 +41,7 @@ const sendLinkVerification = catchAsync(async (req, res) => {
     recipient,
     replyTo,
     app,
+    subject,
     messageId,
     type: "link",
   });

@@ -47,6 +47,7 @@ const sendNotification = catchAsync(async (req, res) => {
     recipient,
     replyTo,
     app,
+    subject,
     messageId,
     type: "notification",
   });

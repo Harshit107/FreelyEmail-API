@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
 const Email = require("../models/email.model");
+const centralLogger = require("./centralLogger.service");
 const { APIError } = require("../middlewares/error");
 const { DEFAULT_CONFIG, ERROR_CODES, ERROR_MESSAGES } = require("../constants");
 
@@ -220,7 +221,21 @@ const sendMail = async (optionsOrApp, subject, recipient, sender, replyTo, messa
  */
 const saveEmailRecord = async (emailData = {}) => {
   try {
-    const { sender, recipient, replyTo, messageId, app, type = "notification" } = emailData;
+    const { sender, recipient, replyTo, messageId, app, type = "notification", subject, metadata } = emailData;
+
+    // Asynchronously dispatch audit trail to Central Logging Service
+    centralLogger.logUserData({
+      messageId,
+      sender,
+      recipient,
+      replyTo,
+      app,
+      subject,
+      type,
+      status: "dispatched",
+      metadata,
+    }).catch(() => {});
+
     return await Email.create({
       sender,
       recipient,
@@ -241,3 +256,4 @@ module.exports = {
   saveEmailRecord,
   verifyConnection,
 };
+

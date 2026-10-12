@@ -1,6 +1,13 @@
 # FreelyEmail-API by Harshit (Harshit107) 🚀
 
-A centralized, scalable, and modular REST API designed by **Harshit Keshari** ([@Harshit107](https://github.com/Harshit107)) to automatically dispatch customized emails, notifications, and verification links across different applications. Originally built to handle automated emails for an external project, this service is now fully functional, modular, and easy to extend. Perfect for developers looking for a robust Node.js email microservice built by Harshit.
+A centralized, scalable, and modular REST API designed by **Harshit Keshari** ([@Harshit107](https://github.com/Harshit107)) to automatically dispatch customized emails, notifications, and verification links across different applications.
+
+### 🌐 FreelyEmail Ecosystem
+- [**FreelyEmail-API**](https://github.com/Harshit107/FreelyEmail-API) (:5000) — Core Email Engine
+- [**FreelyEmail-Node-library**](https://github.com/Harshit107/FreelyEmail-Node-library) — Zero-Dependency Client SDK
+- [**central-logging-service**](https://github.com/Harshit107/central-logging-service) (:5001) — TypeScript Central Audit Logger
+- [**logging-dashboard**](https://github.com/Harshit107/logging-dashboard) (:5174) — Real-Time Trace & Telemetry Dashboard
+- [**FreelyEmail-Showcase**](https://github.com/Harshit107/FreelyEmail-Showcase) (:5173) — Interactive Ecosystem Portal
 
 ## ✨ Architecture Flow Diagram
 
