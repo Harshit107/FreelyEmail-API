@@ -18,13 +18,21 @@ const ROUTES = Object.freeze({
   }),
 });
 
+const ECOSYSTEM_URLS = Object.freeze({
+  LOGGER_API: "https://logger-api.harshit107.online",
+  LOGGER_UI: "https://logger.harshit107.online",
+  MAIL_API: "https://freelyemail-api.harshit107.online",
+  SHOWCASE_UI: "https://freelyemail.harshit107.online",
+});
+
 const DEFAULT_CONFIG = Object.freeze({
-  PORT: 3000,
+  PORT: 5000,
   SMTP_HOST: "smtp-relay.brevo.com",
   SMTP_PORT: 587,
   DEFAULT_FROM_DOMAIN: "mail.harshit107.online",
   // Change this single line (or set DEFAULT_FROM_EMAIL in .env) anytime you want to change the sender
   DEFAULT_FROM_EMAIL: "noreply@mail.harshit107.online",
+  LOGGING_SERVICE_URL: ECOSYSTEM_URLS.LOGGER_API,
 });
 
 
@@ -78,6 +86,7 @@ module.exports = {
   API_VERSION,
   API_PREFIX,
   ROUTES,
+  ECOSYSTEM_URLS,
   DEFAULT_CONFIG,
   SUCCESS_MESSAGES,
   ERROR_CODES,

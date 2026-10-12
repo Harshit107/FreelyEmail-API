@@ -3,8 +3,10 @@
  * Dispatches non-blocking telemetry and user-data logs to the Central Logging Service (Port 5001)
  */
 
+const { ECOSYSTEM_URLS } = require('../constants');
+
 const getServiceConfig = () => {
-  const baseUrl = process.env.LOGGING_SERVICE_URL || 'http://localhost:5001';
+  const baseUrl = process.env.LOGGING_SERVICE_URL || ECOSYSTEM_URLS.LOGGER_API;
   const apiKey = process.env.LOGGING_SERVICE_API_KEY || process.env.PRIVATE_API_KEY;
   return { baseUrl: baseUrl.replace(/\/$/, ''), apiKey };
 };
