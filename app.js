@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 // Connect Database
@@ -17,27 +16,6 @@ const PORT = process.env.PORT || DEFAULT_CONFIG.PORT;
 
 app.use(helmet());
 app.use(cors());
-
-// Rate Limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-  handler: (req, res) => {
-    res.status(429).json({
-      success: false,
-      data: null,
-      error: {
-        errorCode: ERROR_CODES.RATE_LIMIT_EXCEEDED,
-        message: ERROR_MESSAGES[ERROR_CODES.RATE_LIMIT_EXCEEDED],
-      },
-    });
-  },
-});
-
-// Apply rate limiting to all email routes
-app.use(ROUTES.EMAILS.BASE, limiter);
 
 // Parsing body with size limit to prevent memory exhaustion
 app.use(express.json({ limit: "1mb" }));
