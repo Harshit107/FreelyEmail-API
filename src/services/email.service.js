@@ -6,27 +6,57 @@ const { DEFAULT_CONFIG, ERROR_CODES, ERROR_MESSAGES } = require("../constants");
 
 let cachedTransporter = null;
 
+const cleanEnv = (val) => {
+  if (!val) return "";
+  return String(val).trim().replace(/^["']|["']$/g, "").trim();
+};
+
+const getBrevoApiKey = () => {
+  const candidates = [
+    process.env.BREVO_API_KEY,
+    process.env.SENDINBLUE_API_KEY,
+    process.env.BREVO_KEY,
+    process.env.BREVO_PASSWORD,
+    process.env.BREVO_SMTP_KEY,
+    process.env.SENDINBLUE_PASSWORD,
+  ];
+
+  for (const raw of candidates) {
+    const cleaned = cleanEnv(raw);
+    if (cleaned && cleaned.startsWith("xkeysib-")) {
+      return cleaned;
+    }
+  }
+
+  const explicit = cleanEnv(process.env.BREVO_API_KEY);
+  if (explicit) return explicit;
+
+  return null;
+};
+
 const getTransporter = () => {
   if (cachedTransporter) return cachedTransporter;
 
-  const authEmail =
+  const authEmail = cleanEnv(
     process.env.BREVO_EMAIL ||
     process.env.BREVO_SMTP_USER ||
     process.env.SENDINBLUE_EMAIL ||
-    process.env.SMTP_USER;
+    process.env.SMTP_USER
+  );
 
-  const authPass =
+  const authPass = cleanEnv(
     process.env.BREVO_PASSWORD ||
     process.env.BREVO_SMTP_KEY ||
     process.env.SENDINBLUE_PASSWORD ||
-    process.env.SMTP_PASSWORD;
+    process.env.SMTP_PASSWORD
+  );
 
   if (!authEmail || !authPass) {
     throw new APIError(ERROR_MESSAGES[ERROR_CODES.SMTP_NOT_CONFIGURED], 500, ERROR_CODES.SMTP_NOT_CONFIGURED);
   }
 
-  const host = process.env.BREVO_SMTP_HOST || process.env.SMTP_HOST || DEFAULT_CONFIG.SMTP_HOST;
-  const port = parseInt(process.env.BREVO_SMTP_PORT || process.env.SMTP_PORT || DEFAULT_CONFIG.SMTP_PORT, 10);
+  const host = cleanEnv(process.env.BREVO_SMTP_HOST || process.env.SMTP_HOST || DEFAULT_CONFIG.SMTP_HOST);
+  const port = parseInt(cleanEnv(process.env.BREVO_SMTP_PORT || process.env.SMTP_PORT || DEFAULT_CONFIG.SMTP_PORT), 10);
   const isSecure = port === 465;
 
   cachedTransporter = nodemailer.createTransport({
@@ -112,11 +142,7 @@ const sendViaBrevoAPI = async (apiKey, options) => {
  * @returns {Promise<boolean>}
  */
 const verifyConnection = async () => {
-  const brevoApiKey =
-    process.env.BREVO_API_KEY ||
-    (process.env.BREVO_PASSWORD && process.env.BREVO_PASSWORD.startsWith("xkeysib-")
-      ? process.env.BREVO_PASSWORD
-      : null);
+  const brevoApiKey = getBrevoApiKey();
 
   if (brevoApiKey) {
     const response = await fetch("https://api.brevo.com/v3/account", {
@@ -174,11 +200,7 @@ const sendMail = async (optionsOrApp, subject, recipient, sender, replyTo, messa
   const emailHtml = opts.html || opts.HTMLfile || undefined;
 
   // Prefer Brevo REST API when api-key is configured
-  const brevoApiKey =
-    process.env.BREVO_API_KEY ||
-    (process.env.BREVO_PASSWORD && process.env.BREVO_PASSWORD.startsWith("xkeysib-")
-      ? process.env.BREVO_PASSWORD
-      : null);
+  const brevoApiKey = getBrevoApiKey();
 
   if (brevoApiKey) {
     try {
@@ -192,7 +214,12 @@ const sendMail = async (optionsOrApp, subject, recipient, sender, replyTo, messa
         html: emailHtml,
       });
     } catch (error) {
-      throw new APIError(`Failed to send email via Brevo: ${error.message}`, 500, ERROR_CODES.EMAIL_SEND_FAILED, { originalError: error.message });
+      const hasSmtp =
+        (process.env.BREVO_EMAIL || process.env.SMTP_USER) &&
+        (process.env.BREVO_PASSWORD || process.env.SMTP_PASSWORD);
+      if (!hasSmtp) {
+        throw new APIError(`Failed to send email via Brevo: ${error.message}`, 500, ERROR_CODES.EMAIL_SEND_FAILED, { originalError: error.message });
+      }
     }
   }
 
