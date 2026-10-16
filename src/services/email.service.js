@@ -245,8 +245,7 @@ const saveEmailRecord = async (emailData = {}) => {
       type,
     });
   } catch (error) {
-    console.error("Failed to save email record to DB:", error.message);
-    // Non-blocking log: we don't throw to avoid failing email dispatch if DB fails
+    // Non-blocking: we don't throw to avoid failing email dispatch if DB fails
     return null;
   }
 };

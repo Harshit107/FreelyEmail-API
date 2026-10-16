@@ -73,14 +73,7 @@ Enables security headers for Express.
 Allows all origins (default settings).
 
 ### Rate Limiting
-```javascript
-{
-  windowMs: 15 * 60 * 1000,  // 15 minutes
-  max: 100,                  // 100 requests per window
-  standardHeaders: true,
-  legacyHeaders: false
-}
-```
+Direct API rate limiting is unthrottled for high throughput. Edge rate limiting can be applied at the reverse proxy (e.g., Cloudflare, NGINX) or via client-side throttling.
 
 ## MongoDB Connection
 

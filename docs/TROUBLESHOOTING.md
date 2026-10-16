@@ -114,24 +114,6 @@ Verify request payload has required fields:
 
 ---
 
-## 5. Rate Limiting Too Aggressive
+## 5. Rate Limiting Considerations
 
-### Problem
-```
-Too many requests from this IP, please try again after 15 minutes
-```
-
-### Possible Reason
-API has rate limiting (100 requests per 15 minutes).
-
-### Where to Check
-- `app.js` → rate limiting configuration
-
-### Possible Solution
-Increase limit in `app.js`:
-```javascript
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 200,  // Increase from 100
-});
-```
+FreelyEmail-API does not apply internal rate limiting to email endpoints. If you experience `429 Too Many Requests`, check whether an upstream proxy (such as Cloudflare, NGINX, or client rate limiting) has rate limiting active.

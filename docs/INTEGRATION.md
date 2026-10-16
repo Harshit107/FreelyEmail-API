@@ -144,9 +144,6 @@ class APIError extends Error {
 | POST | `/api/v1/emails/otp/request` | Request auto-generated OTP |
 | POST | `/api/v1/emails/verification/link` | Send verification link |
 
-## Rate Limiting
+## Concurrency & Rate Limiting
 
-**Window**: 15 minutes  
-**Max Requests**: 100 per IP
-
-Applied to all routes under `/api/v1/emails`.
+FreelyEmail API does not throttle transactional requests internally, enabling low-latency and uninterrupted email delivery across microservices. Inbound throttling can be configured at the reverse proxy (Cloudflare/Nginx) or client service as required.

@@ -43,15 +43,12 @@ const sendToCentralLogging = async (endpoint, payload) => {
     }).finally(() => clearTimeout(timeoutId));
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.warn(`[CentralLogger] Warning: Server responded with ${response.status}: ${errorText}`);
       return null;
     }
 
     return await response.json();
   } catch (err) {
     // Fail-safe: Central logging failure should NEVER crash or block email operations
-    console.warn(`[CentralLogger] Notice: Remote logging dispatch skipped: ${err.message}`);
     return null;
   }
 };

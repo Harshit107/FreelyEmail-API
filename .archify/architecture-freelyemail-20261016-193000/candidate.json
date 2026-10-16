@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "FreelyEmail Ecosystem Architecture & Dispatch Flow",
+    "output": ".archify/architecture-freelyemail-20261016-193000/freelyemail-architecture.html",
+    "locale": "en",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    {
+      "id": "client_app",
+      "type": "external",
+      "label": "Consuming Services",
+      "sublabel": "OneLogin SSO / Node SDK",
+      "tag": "API Consumers",
+      "pos": [40, 200],
+      "size": [140, 60]
+    },
+    {
+      "id": "freely_api",
+      "type": "backend",
+      "label": "FreelyEmail API",
+      "sublabel": "Express REST Service",
+      "tag": "Port 5002",
+      "pos": [260, 200],
+      "size": [150, 60]
+    },
+    {
+      "id": "template_engine",
+      "type": "backend",
+      "label": "Template Engine",
+      "sublabel": "OTP & Link Generators",
+      "tag": "Responsive HTML",
+      "pos": [260, 340],
+      "size": [150, 60]
+    },
+    {
+      "id": "brevo_delivery",
+      "type": "cloud",
+      "label": "Brevo Engine",
+      "sublabel": "REST API v3 / SMTP Relay",
+      "tag": "Port 587 / TLS",
+      "pos": [720, 200],
+      "size": [150, 60]
+    },
+    {
+      "id": "email_db",
+      "type": "database",
+      "label": "FreelyEmail DB",
+      "sublabel": "MongoDB Atlas",
+      "tag": "Dispatch Records",
+      "pos": [490, 340],
+      "size": [150, 60]
+    },
+    {
+      "id": "recipient_inbox",
+      "type": "external",
+      "label": "Recipient Mailbox",
+      "sublabel": "Gmail, Outlook, iCloud",
+      "tag": "End Users",
+      "pos": [980, 200],
+      "size": [140, 60]
+    },
+    {
+      "id": "central_logger",
+      "type": "backend",
+      "label": "Central Logger",
+      "sublabel": "TypeScript Express API",
+      "tag": "Port 5001",
+      "pos": [260, 60],
+      "size": [150, 60]
+    },
+    {
+      "id": "logging_dashboard",
+      "type": "frontend",
+      "label": "Logging Dashboard",
+      "sublabel": "React + Vite UI",
+      "tag": "Port 5174",
+      "pos": [490, 60],
+      "size": [150, 60]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "FreelyEmail Core Ecosystem (Microservices)",
+      "wraps": ["freely_api", "template_engine", "email_db", "central_logger", "logging_dashboard"],
+      "pad": 24
+    }
+  ],
+  "connections": [
+    {
+      "id": "client-to-api",
+      "from": "client_app",
+      "to": "freely_api",
+      "label": "POST /emails/*",
+      "variant": "emphasis",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "api-to-template",
+      "from": "freely_api",
+      "to": "template_engine",
+      "label": "compile HTML",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "api-to-brevo",
+      "from": "freely_api",
+      "to": "brevo_delivery",
+      "label": "dispatch mail",
+      "variant": "emphasis",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "brevo-to-recipient",
+      "from": "brevo_delivery",
+      "to": "recipient_inbox",
+      "label": "deliver email",
+      "variant": "default",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "api-to-db",
+      "from": "freely_api",
+      "to": "email_db",
+      "label": "save record",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "left"
+    },
+    {
+      "id": "api-to-logger",
+      "from": "freely_api",
+      "to": "central_logger",
+      "label": "telemetry log",
+      "variant": "dashed",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "id": "dashboard-to-logger",
+      "from": "logging_dashboard",
+      "to": "central_logger",
+      "label": "audit queries",
+      "variant": "default",
+      "fromSide": "left",
+      "toSide": "right"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "API & Ingestion Tier",
+      "items": [
+        "Unthrottled high-performance email dispatch endpoints for notifications, OTP, and verification links",
+        "SDK and direct HTTP clients integrate with simple JSON contracts and robust validation",
+        "Responsive, branded HTML templates generated deterministically on-the-fly"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Delivery & Persistence",
+      "items": [
+        "Dual-mode delivery pipeline: high-speed Brevo REST API v3 with automatic SMTP relay fallback",
+        "Transactional persistence in MongoDB tracking message IDs, delivery status, and timestamps",
+        "Zero blocking overhead: failed telemetry never impedes customer email delivery"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Telemetry & Observability",
+      "items": [
+        "Centralized Logging Service (TypeScript) ingests telemetry, errors, and delivery audit trails",
+        "Modern real-time logging dashboard for message tracking, delivery inspection, and API simulation"
+      ]
+    }
+  ]
+}

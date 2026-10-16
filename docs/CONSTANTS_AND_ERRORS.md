@@ -184,7 +184,7 @@ If `errorCode` is omitted, `APIError` automatically resolves sensible defaults b
 | `INVALID_OTP` | 400 | "A valid OTP code is required" | OTP is blank or not a string |
 | `INVALID_LINK` | 400 | "A valid verification link is required" | Verification URL is missing or blank |
 | `ROUTE_NOT_FOUND` | 404 | "Route not found: METHOD /path" | Endpoint requested does not exist |
-| `RATE_LIMIT_EXCEEDED` | 429 | "Too many requests from this IP, please try again after 15 minutes" | IP made >100 requests in 15 minute window |
+| `RATE_LIMIT_EXCEEDED` | 429 | "Too many requests, please try again later" | Upstream or client rate limit exceeded |
 | `SMTP_NOT_CONFIGURED` | 500 | "Brevo SMTP credentials are not configured in environment variables." | Missing environment variables for nodemailer (BREVO_EMAIL / BREVO_PASSWORD) |
 | `EMAIL_SEND_FAILED` | 500 | "Failed to send email: [reason]" | Transporter failed to deliver the message |
 

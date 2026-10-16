@@ -209,19 +209,19 @@ For full error catalog and route constants, see [CONSTANTS_AND_ERRORS.md](CONSTA
 
 ---
 
-## Rate Limiting
+## Rate Limiting & Throughput
 
-**Window**: 15 minutes  
-**Max Requests**: 100 per IP
+By default, the API operates in **unthrottled mode** to ensure maximum throughput for high-volume transactional services (such as OneLogin authentication flows).
 
-### Rate Limit Response
+Upstream reverse proxies (e.g., Cloudflare, NGINX, or API Gateways) can optionally enforce edge rate limits. If a 429 is encountered upstream:
+
 ```json
 {
   "success": false,
   "data": null,
   "error": {
     "errorCode": "RATE_LIMIT_EXCEEDED",
-    "message": "Too many requests from this IP, please try again after 15 minutes"
+    "message": "Too many requests from this IP, please try again later"
   }
 }
 ```

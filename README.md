@@ -269,7 +269,7 @@ All successful responses across all endpoints follow an identical envelope:
 
 ## 🛡️ Standardized Error Response Format
 
-All error responses (validation failures, 404 routes, rate limits, bad JSON, and server crashes) strictly adhere to a unified JSON contract:
+All error responses (validation failures, 404 routes, bad JSON, and server crashes) strictly adhere to a unified JSON contract:
 
 
 ```json
@@ -296,7 +296,7 @@ All error responses (validation failures, 404 routes, rate limits, bad JSON, and
 | `INVALID_OTP` | 400 | The `otp` field is empty or missing |
 | `INVALID_LINK` | 400 | The verification `link` is empty or missing |
 | `ROUTE_NOT_FOUND` | 404 | The requested endpoint does not exist |
-| `RATE_LIMIT_EXCEEDED` | 429 | More than 100 requests per 15 minutes from an IP address |
+| `RATE_LIMIT_EXCEEDED` | 429 | Upstream / gateway rate limit exceeded |
 | `SMTP_NOT_CONFIGURED` | 500 | Missing `BREVO_EMAIL` or `BREVO_PASSWORD` |
 | `EMAIL_SEND_FAILED` | 500 | SMTP transporter failed to deliver the email message |
 

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "758205e6-d870-406b-b087-18bf4006e027",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "D:\\Projects\\Live\\Groups\\FreelyEmail-Groups\\.archify\\architecture-freelyemail-20261016-193000\\candidate.json",
+  "output": "D:\\Projects\\Live\\Groups\\FreelyEmail-Groups\\.archify\\architecture-freelyemail-20261016-193000\\freelyemail-architecture.html",
+  "specification": {
+    "sha256": "947fa4b5ece8e5776e1bb83f157d0075ba9a50214ac7c3102054bdcc886d63d3",
+    "bytes": 4947
+  },
+  "artifact": {
+    "sha256": "e110b9b232a6a28d85f3ac65691eafe3a4d759596736c642a932277fa4b57cff",
+    "bytes": 822792
+  }
+}
