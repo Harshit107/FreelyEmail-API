@@ -1,103 +1,53 @@
-const crypto = require("crypto");
 const emailService = require("../services/email.service");
-const catchAsync = require("../utils/catchAsync");
-const { APIError } = require("../middlewares/error");
-const { isNonEmptyString } = require("../utils/validator");
-const { ERROR_CODES, ERROR_MESSAGES, SUCCESS_MESSAGES } = require("../constants");
-const getOtpTemplate = require("../templates/otpVerificationTemplate");
-const { ensureValidBaseRequest } = require("./controller.helper");
+const { SUCCESS_MESSAGES } = require("../constants");
 
 /**
- * Send an OTP Email (Custom OTP provided in request)
- * POST /api/v1/emails/otp/send
+ * Task Method & Route Controller for sending custom OTP email.
+ * - Called from routes: pass req.body or (req, res)
+ * - Called directly from any module: sendOtp(body)
+ *
+ * @param {Object} bodyOrReq
+ * @param {Object} [res]
+ * @returns {Promise<{ messageId: string }>}
  */
-const sendOtp = catchAsync(async (req, res) => {
-  const sender = req.body.sender || "FreelyEmail";
-  const recipient = req.body.recipient || req.body.to;
-  const app = req.body.app || req.body.appName;
-  const subject = req.body.subject || `Your ${app || 'Verification'} Code`;
-  const { replyTo, otp, withValidTime = 10, HTMLfile } = req.body;
-
-  ensureValidBaseRequest({ ...req.body, sender, recipient, app, subject });
-
-  if (!isNonEmptyString(otp)) {
-    throw new APIError(ERROR_MESSAGES[ERROR_CODES.INVALID_OTP], 400, ERROR_CODES.INVALID_OTP);
+const sendOtp = async (bodyOrReq, res) => {
+  if (!res || typeof res.status !== "function") {
+    const body = bodyOrReq && bodyOrReq.body ? bodyOrReq.body : bodyOrReq;
+    return await emailService.sendOtp(body);
   }
 
-  const htmlContent = HTMLfile || getOtpTemplate(app, otp, withValidTime);
-
-  const messageId = await emailService.sendMail({
-    app,
-    subject,
-    recipient,
-    sender,
-    replyTo,
-    text: `Your verification code is: ${otp}`,
-    html: htmlContent,
-  });
-
-  await emailService.saveEmailRecord({
-    sender,
-    recipient,
-    replyTo,
-    app,
-    subject,
-    messageId,
-    type: "otp",
-  });
-
-  res.status(200).json({
+  const data = await emailService.sendOtp(bodyOrReq.body);
+  return res.status(200).json({
     success: true,
-    data: { messageId },
+    data,
     message: SUCCESS_MESSAGES.OTP_SENT,
     error: null,
   });
-});
+};
 
 /**
- * Request OTP Email (Auto-generates a secure 6-digit OTP)
- * POST /api/v1/emails/otp/request
+ * Task Method & Route Controller for requesting auto-generated secure OTP email.
+ * - Called from routes: pass req.body or (req, res)
+ * - Called directly from any module: requestOtp(body)
+ *
+ * @param {Object} bodyOrReq
+ * @param {Object} [res]
+ * @returns {Promise<{ messageId: string, otp: string }>}
  */
-const requestOtp = catchAsync(async (req, res) => {
-  const sender = req.body.sender || "FreelyEmail";
-  const recipient = req.body.recipient || req.body.to;
-  const app = req.body.app || req.body.appName;
-  const subject = req.body.subject || `Your ${app || 'Verification'} Code`;
-  const { replyTo, withValidTime = 10 } = req.body;
+const requestOtp = async (bodyOrReq, res) => {
+  if (!res || typeof res.status !== "function") {
+    const body = bodyOrReq && bodyOrReq.body ? bodyOrReq.body : bodyOrReq;
+    return await emailService.requestOtp(body);
+  }
 
-  ensureValidBaseRequest({ ...req.body, sender, recipient, app, subject });
-
-  // Generate a cryptographically secure 6-digit OTP
-  const otp = crypto.randomInt(100000, 1000000).toString();
-  const htmlContent = getOtpTemplate(app, otp, withValidTime);
-
-  const messageId = await emailService.sendMail({
-    app,
-    subject,
-    recipient,
-    sender,
-    replyTo,
-    text: `Your verification code is: ${otp}`,
-    html: htmlContent,
-  });
-
-  await emailService.saveEmailRecord({
-    sender,
-    recipient,
-    replyTo,
-    app,
-    subject,
-    messageId,
-    type: "otp",
-  });
-
-  res.status(200).json({
+  const data = await emailService.requestOtp(bodyOrReq.body);
+  return res.status(200).json({
     success: true,
-    data: { messageId, otp },
+    data,
     message: SUCCESS_MESSAGES.OTP_REQUESTED,
     error: null,
   });
-});
+};
 
 module.exports = {
   sendOtp,

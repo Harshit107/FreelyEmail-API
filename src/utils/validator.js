@@ -40,9 +40,23 @@ const validateEmailRequest = (body = {}) => {
   return errors;
 };
 
+const { APIError } = require("../middlewares/error");
+const { ERROR_CODES } = require("../constants");
+
+/**
+ * Validates base email request payload and throws APIError if invalid
+ */
+const ensureValidBaseRequest = (body) => {
+  const errors = validateEmailRequest(body);
+  if (errors.length > 0) {
+    throw new APIError(errors.join(", "), 400, ERROR_CODES.VALIDATION_ERROR, { validationErrors: errors });
+  }
+};
+
 module.exports = {
   isValidEmail,
   isNonEmptyString,
   validateData,
   validateEmailRequest,
+  ensureValidBaseRequest,
 };

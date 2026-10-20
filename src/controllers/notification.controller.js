@@ -1,64 +1,31 @@
 const emailService = require("../services/email.service");
-const catchAsync = require("../utils/catchAsync");
-const { APIError } = require("../middlewares/error");
-const { isNonEmptyString } = require("../utils/validator");
-const { ERROR_CODES, ERROR_MESSAGES, SUCCESS_MESSAGES } = require("../constants");
-const getNotificationTemplate = require("../templates/notificationTemplate");
-const { ensureValidBaseRequest } = require("./controller.helper");
+const { SUCCESS_MESSAGES } = require("../constants");
 
 /**
- * Send a simple notification email
- * POST /api/v1/emails/send
+ * Task Method & Route Controller for sending a notification email.
+ * - Called from routes: pass req.body or (req, res)
+ * - Called directly from any module: sendNotification(body)
+ *
+ * @param {Object} bodyOrReq
+ * @param {Object} [res]
+ * @returns {Promise<{ messageId: string }>}
  */
-const sendNotification = catchAsync(async (req, res) => {
-  const sender = req.body.sender || "FreelyEmail";
-  const recipient = req.body.recipient || req.body.to;
-  const app = req.body.app || req.body.appName;
-  const subject = req.body.subject;
-  const message = req.body.message || req.body.text;
-  const rawHTML = req.body.HTMLfile || req.body.html;
-  const replyTo = req.body.replyTo;
-  const ctaText = req.body.ctaText || req.body.buttonText;
-  const ctaUrl = req.body.ctaUrl || req.body.link;
-
-  ensureValidBaseRequest({ ...req.body, sender, recipient, app, subject });
-
-  if (!isNonEmptyString(message) && !isNonEmptyString(rawHTML)) {
-    throw new APIError(ERROR_MESSAGES[ERROR_CODES.MISSING_EMAIL_CONTENT], 400, ERROR_CODES.MISSING_EMAIL_CONTENT);
+const sendNotification = async (bodyOrReq, res) => {
+  // Direct function call from any module/script: sendNotification(body)
+  if (!res || typeof res.status !== "function") {
+    const body = bodyOrReq && bodyOrReq.body ? bodyOrReq.body : bodyOrReq;
+    return await emailService.sendNotification(body);
   }
 
-  // Use developer-supplied HTML if given; otherwise wrap text message in responsive template
-  const HTMLfile = isNonEmptyString(rawHTML)
-    ? rawHTML
-    : getNotificationTemplate(app, subject, message, { ctaText, ctaUrl });
-
-  const messageId = await emailService.sendMail({
-    app,
-    subject,
-    recipient,
-    sender,
-    replyTo,
-    text: message,
-    html: HTMLfile,
-  });
-
-  await emailService.saveEmailRecord({
-    sender,
-    recipient,
-    replyTo,
-    app,
-    subject,
-    messageId,
-    type: "notification",
-  });
-
-  res.status(200).json({
+  // Express middleware invocation: sendNotification(req, res)
+  const data = await emailService.sendNotification(bodyOrReq.body);
+  return res.status(200).json({
     success: true,
-    data: { messageId },
+    data,
     message: SUCCESS_MESSAGES.EMAIL_SENT,
     error: null,
   });
-});
+};
 
 module.exports = {
   sendNotification,
