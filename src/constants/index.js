@@ -18,21 +18,23 @@ const ROUTES = Object.freeze({
   }),
 });
 
+const DOMAINS = require("../config/domain");
+
 const ECOSYSTEM_URLS = Object.freeze({
-  LOGGER_API: "https://logger-api.harshit107.online",
-  LOGGER_UI: "https://logger.harshit107.online",
-  MAIL_API: "https://freelyemail-api.harshit107.online",
-  SHOWCASE_UI: "https://freelyemail.harshit107.online",
+  LOGGER_API: DOMAINS.EMAIL.LOGGER_API,
+  LOGGER_UI: DOMAINS.EMAIL.LOGGER_UI,
+  MAIL_API: DOMAINS.EMAIL.API,
+  SHOWCASE_UI: DOMAINS.EMAIL.SHOWCASE_UI,
 });
 
 const DEFAULT_CONFIG = Object.freeze({
   PORT: 5000,
   SMTP_HOST: "smtp-relay.brevo.com",
   SMTP_PORT: 587,
-  DEFAULT_FROM_DOMAIN: "mail.harshit107.online",
+  DEFAULT_FROM_DOMAIN: DOMAINS.EMAIL.FROM_DOMAIN,
   // Change this single line (or set DEFAULT_FROM_EMAIL in .env) anytime you want to change the sender
-  DEFAULT_FROM_EMAIL: "noreply@mail.harshit107.online",
-  LOGGING_SERVICE_URL: ECOSYSTEM_URLS.LOGGER_API,
+  DEFAULT_FROM_EMAIL: DOMAINS.EMAIL.DEFAULT_FROM_EMAIL,
+  LOGGING_SERVICE_URL: DOMAINS.EMAIL.LOGGER_API,
 });
 
 
@@ -91,4 +93,5 @@ module.exports = {
   SUCCESS_MESSAGES,
   ERROR_CODES,
   ERROR_MESSAGES,
+  DOMAINS,
 };
