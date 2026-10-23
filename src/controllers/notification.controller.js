@@ -2,7 +2,7 @@ const emailService = require("../services/email.service");
 const { SUCCESS_MESSAGES } = require("../constants");
 
 /**
- * Task Method & Route Controller for sending a notification email.
+ * Task Method & Route Controller for sending a notification email (Synchronous).
  * - Called from routes: pass req.body or (req, res)
  * - Called directly from any module: sendNotification(body)
  *
@@ -27,6 +27,63 @@ const sendNotification = async (bodyOrReq, res) => {
   });
 };
 
+/**
+ * Synchronous Route Controller: Awaits SMTP dispatch and returns messageId
+ */
+const sendNotificationSync = async (req, res) => {
+  const body = req.body || {};
+  const data = await emailService.sendNotification(body);
+  return res.status(200).json({
+    success: true,
+    data: {
+      ...data,
+      status: "sent",
+    },
+    message: SUCCESS_MESSAGES.EMAIL_SENT,
+    error: null,
+  });
+};
+
+/**
+ * Asynchronous Route Controller: Validates basic payload, queues email in background,
+ * and immediately responds with 202 Accepted.
+ */
+const sendNotificationAsync = async (req, res) => {
+  const body = req.body || {};
+  const recipient = body.recipient || body.to;
+
+  if (!recipient || typeof recipient !== "string" || !recipient.trim()) {
+    return res.status(400).json({
+      success: false,
+      data: null,
+      error: {
+        errorCode: "INVALID_RECIPIENT",
+        message: "Recipient email is required",
+      },
+    });
+  }
+
+  // Fire-and-forget in background
+  setImmediate(() => {
+    emailService.sendNotification(body).catch((err) => {
+      console.error("[Async Notification Error]:", err.message);
+    });
+  });
+
+  return res.status(202).json({
+    success: true,
+    data: {
+      status: "queued",
+      recipient,
+      queuedAt: new Date().toISOString(),
+    },
+    message: SUCCESS_MESSAGES.EMAIL_QUEUED,
+    error: null,
+  });
+};
+
 module.exports = {
   sendNotification,
+  sendNotificationSync,
+  sendNotificationAsync,
 };

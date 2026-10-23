@@ -12,9 +12,13 @@ const ROUTES = Object.freeze({
   EMAILS: Object.freeze({
     BASE: `${API_PREFIX}/emails`,
     SEND: "/send",
+    NOTIFICATION: "/notification",
+    NOTIFICATION_ASYNC: "/notification/async",
     OTP_SEND: "/otp/send",
     OTP_REQUEST: "/otp/request",
     LINK_VERIFICATION: "/verification/link",
+    LINK: "/link",
+    LINK_ASYNC: "/link/async",
   }),
 });
 
@@ -41,9 +45,11 @@ const DEFAULT_CONFIG = Object.freeze({
 const SUCCESS_MESSAGES = Object.freeze({
   HEALTH: "Server is working perfectly fine.",
   EMAIL_SENT: "Email dispatched successfully",
+  EMAIL_QUEUED: "Email delivery queued successfully",
   OTP_SENT: "OTP email dispatched successfully",
   OTP_REQUESTED: "OTP generated and dispatched successfully",
   LINK_SENT: "Verification link email dispatched successfully",
+  LINK_QUEUED: "Verification link email delivery queued successfully",
 });
 
 const ERROR_CODES = Object.freeze({

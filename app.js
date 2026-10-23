@@ -59,8 +59,11 @@ app.use((req, res) => {
 // Centralized Error Handling Middleware
 app.use(errorHandler);
 
-const server = app.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
-});
+let server = null;
+if (require.main === module) {
+  server = app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`);
+  });
+}
 
 module.exports = app;
