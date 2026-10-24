@@ -38,8 +38,17 @@ app.get(ROUTES.HEALTH, (req, res) => {
 });
 
 
-// Old Check Server route for backwards compatibility if needed
-app.get(ROUTES.LEGACY_CHECK_SERVER, (req, res) => {
+// Server Maintainer / Health check routes
+app.get([ROUTES.LEGACY_CHECK_SERVER, "/checkserver", "/startserver", "/startServer"], (req, res) => {
+  if (req.headers.accept && req.headers.accept.includes("application/json")) {
+    return res.json({
+      status: "online",
+      server: "FreelyEmail API",
+      message: "Hey developer, FreelyEmail Server is working perfectly fine",
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString()
+    });
+  }
   res.send('<H1> Hey developer,</H1> <H3>Server is working perfectly fine </H3>');
 });
 
