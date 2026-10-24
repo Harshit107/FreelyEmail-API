@@ -33,6 +33,19 @@ const emailSchema = new mongoose.Schema(
       enum: ["notification", "otp", "link"],
       default: "notification",
     },
+    status: {
+      type: String,
+      enum: ["queued", "dispatched", "completed", "failed"],
+      default: "dispatched",
+    },
+    jobId: {
+      type: String,
+      trim: true,
+      index: true,
+    },
+    completedAt: {
+      type: Date,
+    },
   },
   {
     timestamps: true,

@@ -2,152 +2,294 @@
 	"info": {
 		"_postman_id": "freelyemail-api-collection-v1",
 		"name": "FreelyEmail API v1",
-		"description": "Postman Collection for FreelyEmail API v1 with standardized JSON envelope and Brevo dispatch support.",
+		"description": "Comprehensive Postman Collection for FreelyEmail API v1 supporting synchronous SMTP delivery, BullMQ background asynchronous queues, auto/custom OTP generation, and interactive verification link emails.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Health Check",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/api/v1/health",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"health"
-					]
-				},
-				"description": "Pings the API to check server status and health."
-			},
-			"response": []
+			"name": "System",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"health"
+							]
+						},
+						"description": "Pings the API to check server status, uptime, and health."
+					},
+					"response": []
+				}
+			]
 		},
 		{
-			"name": "Send Notification Email",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"to\": \"recipient@example.com\",\n  \"subject\": \"Welcome to FreelyEmail!\",\n  \"text\": \"Hello from FreelyEmail API. Your email system is up and running!\",\n  \"html\": \"<div style=\\\"font-family: Arial, sans-serif; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;\\\"><h2>Welcome to FreelyEmail! 🎉</h2><p>This is a rich HTML test email sent via <strong>FreelyEmail API</strong>.</p></div>\",\n  \"appName\": \"FreelyEmail Demo\"\n}"
+			"name": "Notifications",
+			"item": [
+				{
+					"name": "Send Notification (Sync)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"to\": \"recipient@example.com\",\n  \"subject\": \"Welcome to FreelyEmail!\",\n  \"text\": \"Hello from FreelyEmail API. Your email system is up and running!\",\n  \"html\": \"<div style=\\\"font-family: Arial, sans-serif; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;\\\"><h2>Welcome to FreelyEmail! 🎉</h2><p>This is a rich HTML test email sent via <strong>FreelyEmail API</strong>.</p></div>\",\n  \"appName\": \"FreelyEmail Demo\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/emails/notification",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"emails",
+								"notification"
+							]
+						},
+						"description": "Sends a notification email synchronously via SMTP relay."
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{baseUrl}}/api/v1/emails/send",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"emails",
-						"send"
-					]
+				{
+					"name": "Send Notification (Async Queue - BullMQ)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"to\": \"recipient@example.com\",\n  \"subject\": \"Queued Welcome Notification!\",\n  \"text\": \"This email was queued into BullMQ and dispatched in the background worker.\",\n  \"html\": \"<div style=\\\"font-family: Arial, sans-serif; padding: 20px; border: 1px solid #22d3ee; border-radius: 8px;\\\"><h2>Queued Email Dispatched 🚀</h2><p>Handled asynchronously via BullMQ & Redis worker.</p></div>\",\n  \"appName\": \"FreelyEmail Demo\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/emails/notification/async",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"emails",
+								"notification",
+								"async"
+							]
+						},
+						"description": "Enqueues email for fast 202 Accepted response and asynchronous background delivery."
+					},
+					"response": []
 				},
-				"description": "Sends a standard notification email with HTML and text content."
-			},
-			"response": []
+				{
+					"name": "Legacy Send Notification",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"to\": \"recipient@example.com\",\n  \"subject\": \"Legacy Send Endpoint Test\",\n  \"text\": \"Standard notification sent via /send endpoint\",\n  \"html\": \"<p>Notification content here</p>\",\n  \"appName\": \"FreelyEmail Demo\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/emails/send",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"emails",
+								"send"
+							]
+						},
+						"description": "Legacy backward-compatible endpoint for sending notification emails."
+					},
+					"response": []
+				}
+			]
 		},
 		{
-			"name": "Request OTP (Auto-Generated)",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"to\": \"recipient@example.com\",\n  \"length\": 6,\n  \"withValidTime\": 10,\n  \"appName\": \"FreelyEmail Demo\"\n}"
+			"name": "OTP (One-Time Password)",
+			"item": [
+				{
+					"name": "Request OTP (Auto-Generated)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"to\": \"recipient@example.com\",\n  \"length\": 6,\n  \"withValidTime\": 10,\n  \"appName\": \"FreelyEmail Demo\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/emails/otp/request",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"emails",
+								"otp",
+								"request"
+							]
+						},
+						"description": "Generates a cryptographically secure numeric OTP, emails it to the recipient, and returns the OTP value and messageId in the API response."
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{baseUrl}}/api/v1/emails/otp/request",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"emails",
-						"otp",
-						"request"
-					]
-				},
-				"description": "Generates a secure numeric OTP, emails it to the recipient, and returns the OTP and messageId in the data payload."
-			},
-			"response": []
+				{
+					"name": "Send OTP (Custom / User-Provided)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"to\": \"recipient@example.com\",\n  \"otp\": \"584920\",\n  \"withValidTime\": 5,\n  \"appName\": \"FreelyEmail Demo\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/emails/otp/send",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"emails",
+								"otp",
+								"send"
+							]
+						},
+						"description": "Emails a custom OTP provided by the caller service."
+					},
+					"response": []
+				}
+			]
 		},
 		{
-			"name": "Send OTP (User-Provided)",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"to\": \"recipient@example.com\",\n  \"otp\": \"584920\",\n  \"withValidTime\": 5,\n  \"appName\": \"FreelyEmail Demo\"\n}"
+			"name": "Verification Links",
+			"item": [
+				{
+					"name": "Send Link (Sync)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"to\": \"recipient@example.com\",\n  \"link\": \"https://harshit107.online/auth/verify?token=example_token_123\",\n  \"subject\": \"Confirm Your Account\",\n  \"buttonText\": \"Verify Email\",\n  \"withValidTime\": 15,\n  \"appName\": \"FreelyEmail Demo\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/emails/link",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"emails",
+								"link"
+							]
+						},
+						"description": "Sends a verification button link email synchronously."
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{baseUrl}}/api/v1/emails/otp/send",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"emails",
-						"otp",
-						"send"
-					]
+				{
+					"name": "Send Link (Async Queue - BullMQ)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"to\": \"recipient@example.com\",\n  \"link\": \"https://harshit107.online/auth/verify?token=example_token_123\",\n  \"subject\": \"Confirm Your Account (Async)\",\n  \"buttonText\": \"Verify Email\",\n  \"withValidTime\": 15,\n  \"appName\": \"FreelyEmail Demo\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/emails/link/async",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"emails",
+								"link",
+								"async"
+							]
+						},
+						"description": "Enqueues a verification link email into BullMQ for background worker dispatch."
+					},
+					"response": []
 				},
-				"description": "Sends an email with a custom OTP provided in the request body."
-			},
-			"response": []
-		},
-		{
-			"name": "Send Verification Link",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"to\": \"recipient@example.com\",\n  \"link\": \"https://yourwebsite.com/auth/verify?token=example_secure_token_123\",\n  \"subject\": \"Confirm Your Account\",\n  \"buttonText\": \"Verify Email\",\n  \"withValidTime\": 15,\n  \"appName\": \"FreelyEmail Demo\"\n}"
-				},
-				"url": {
-					"raw": "{{baseUrl}}/api/v1/emails/verification/link",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"emails",
-						"verification",
-						"link"
-					]
-				},
-				"description": "Sends a verification/action link styled as an interactive button inside an email."
-			},
-			"response": []
+				{
+					"name": "Legacy Verification Link",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"to\": \"recipient@example.com\",\n  \"link\": \"https://harshit107.online/auth/verify?token=example_token_123\",\n  \"subject\": \"Confirm Your Account\",\n  \"buttonText\": \"Verify Email\",\n  \"withValidTime\": 15,\n  \"appName\": \"FreelyEmail Demo\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/emails/verification/link",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"emails",
+								"verification",
+								"link"
+							]
+						},
+						"description": "Legacy endpoint for sending email verification links."
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"variable": [

@@ -59,11 +59,17 @@ app.use((req, res) => {
 // Centralized Error Handling Middleware
 app.use(errorHandler);
 
+const { startEmailWorker } = require("./src/workers/email.worker");
+
 let server = null;
 if (require.main === module) {
   server = app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
   });
+
+  if (process.env.RUN_WORKER !== "false") {
+    startEmailWorker();
+  }
 }
 
 module.exports = app;

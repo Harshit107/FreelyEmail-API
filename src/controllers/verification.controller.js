@@ -1,5 +1,7 @@
 const emailService = require("../services/email.service");
 const { SUCCESS_MESSAGES } = require("../constants");
+const { validateRecipient, validateLink } = require("./controller.helper");
+const { addEmailJob } = require("../queues/email.queue");
 
 /**
  * Task Method & Route Controller for sending Link Verification Email.
@@ -43,7 +45,7 @@ const sendLinkSync = async (req, res) => {
 };
 
 /**
- * Asynchronous Route Controller: Validates basic payload, queues email in background,
+ * Asynchronous Route Controller: Validates basic payload, pushes to BullMQ queue,
  * and immediately responds with 202 Accepted.
  */
 const sendLinkAsync = async (req, res) => {
@@ -51,39 +53,22 @@ const sendLinkAsync = async (req, res) => {
   const recipient = body.recipient || body.to;
   const link = body.link;
 
-  if (!recipient || typeof recipient !== "string" || !recipient.trim()) {
-    return res.status(400).json({
-      success: false,
-      data: null,
-      error: {
-        errorCode: "INVALID_RECIPIENT",
-        message: "Recipient email is required",
-      },
-    });
+  // Reusable validation helpers
+  if (!validateRecipient(recipient, res)) {
+    return;
   }
 
-  if (!link || typeof link !== "string" || !link.trim()) {
-    return res.status(400).json({
-      success: false,
-      data: null,
-      error: {
-        errorCode: "INVALID_LINK",
-        message: "Verification link is required",
-      },
-    });
+  if (!validateLink(link, res)) {
+    return;
   }
 
-  // Fire-and-forget in background
-  setImmediate(() => {
-    emailService.sendLinkVerification(body).catch((err) => {
-      console.error("[Async Link Verification Error]:", err.message);
-    });
-  });
+  // Enqueue job via BullMQ (with automatic background fallback)
+  const queueResult = await addEmailJob("link", body);
 
   return res.status(202).json({
     success: true,
     data: {
-      status: "queued",
+      ...queueResult,
       recipient,
       queuedAt: new Date().toISOString(),
     },

@@ -1,5 +1,7 @@
 const emailService = require("../services/email.service");
 const { SUCCESS_MESSAGES } = require("../constants");
+const { validateRecipient } = require("./controller.helper");
+const { addEmailJob } = require("../queues/email.queue");
 
 /**
  * Task Method & Route Controller for sending a notification email (Synchronous).
@@ -45,35 +47,25 @@ const sendNotificationSync = async (req, res) => {
 };
 
 /**
- * Asynchronous Route Controller: Validates basic payload, queues email in background,
+ * Asynchronous Route Controller: Validates basic payload, pushes job to BullMQ queue,
  * and immediately responds with 202 Accepted.
  */
 const sendNotificationAsync = async (req, res) => {
   const body = req.body || {};
   const recipient = body.recipient || body.to;
 
-  if (!recipient || typeof recipient !== "string" || !recipient.trim()) {
-    return res.status(400).json({
-      success: false,
-      data: null,
-      error: {
-        errorCode: "INVALID_RECIPIENT",
-        message: "Recipient email is required",
-      },
-    });
+  // Reusable validation helper
+  if (!validateRecipient(recipient, res)) {
+    return;
   }
 
-  // Fire-and-forget in background
-  setImmediate(() => {
-    emailService.sendNotification(body).catch((err) => {
-      console.error("[Async Notification Error]:", err.message);
-    });
-  });
+  // Enqueue job via BullMQ (with automatic background fallback)
+  const queueResult = await addEmailJob("notification", body);
 
   return res.status(202).json({
     success: true,
     data: {
-      status: "queued",
+      ...queueResult,
       recipient,
       queuedAt: new Date().toISOString(),
     },
